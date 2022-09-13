@@ -20,15 +20,17 @@ knitr::opts_chunk$set(
 
 The goal of codeutils is to provide a set of utility functions that facilitate the useo fR and programming in R
 
+Latest Developments:
+
+* 2022-09-14 0.0.2 Added makelist and tidied some help pages.
+
+
+
+
 ## Installation
 
-You can install the released version of codeutils from [CRAN](https://CRAN.R-project.org) with:
 
-``` r
-install.packages("codeutils")
-```
-
-And the development version from [GitHub](https://github.com/) with:
+The latest version from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")

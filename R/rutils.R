@@ -1,18 +1,15 @@
 # codeutils ------------------------------------
 
-
-#' @title classDF - tabluate the class of each column in a da
+#' @title classDF - tabulate the class of each column in a data.frame
 #'
-#' @description classDF - tabluate the class of each column in a dataframe.
+#' @description classDF - tabulate the class of each column in a data.frame.
 #'
-#' @param dataframe - the input dataframe for examination
+#' @param dataframe - the input data.frame for examination
 #' @return generates paired column names with their classes
 #' @export classDF
 #' @examples
-#' \dontrun{
 #'  data(ChickWeight)
 #'  classDF(ChickWeight)
-#' }
 classDF <- function(dataframe) {
   nvar <- dim(dataframe)[2]
   for (i in 1:nvar) cat(colnames(dataframe)[i],class(dataframe[,i]),"\n")
@@ -416,6 +413,29 @@ makelabel <- function (txt, vect, sep = "_", digits = 3) {
   if (nchar(txt) > 0) label <- paste0(txt,sep,label)
   return(label)
 } # end of makelabel
+
+#' @title makelist a utility that outputs a list structure defined by its input
+#'
+#' @description makelist is a utility that performs the common task of making
+#'     a list structure of the same length as the vector of names input. It
+#'     also names each of the list components after the vector of names. The
+#'     output list structure is then ready to be populated with results.
+#'
+#' @param scenes an vector of character names describing different scenarios
+#'
+#' @return a list of length scenes names for the vector of names in scenes
+#' @export
+#'
+#' @examples
+#' scenarios <- c("base_case","higher_M","Lower_M")
+#' changeM <- makelist(scenes=scenarios)
+#' changeM
+makelist <- function(scenes) {
+  nscen <- length(scenes)
+  tmp <- vector(mode="list",length=nscen)
+  names(tmp) <- scenes
+  return(tmp)
+} # end of makelist
 
 #' @title makeUnit generates a unit matrix whose diagonal can be changed
 #' 
@@ -913,6 +933,7 @@ wtedmean <- function(x,wts) {
 #'  x <- describefunctions(indir=usedir,files=filename,outfile="")
 #'  x
 describefunctions <- function(indir,files="",outfile="") {
+  # indir=indir; files=files;outfile=outfile
   if (nchar(files[1]) == 0) {
     dirfiles <- dir(indir)
     pickfiles <- grep(".R",dirfiles,ignore.case=TRUE)
@@ -923,18 +944,18 @@ describefunctions <- function(indir,files="",outfile="") {
   nfiles <- length(files)
   numfuns <- matrix(0,nrow=nfiles,ncol=1,dimnames=list(files,c("nfuns")))
   allfiles <- NULL
-  for (i in 1:nfiles) { # i = 1
+  for (i in 1:nfiles) { # i = 4
     outfuns <- listfuns(paste0(indir,files[i]))
     if (nrow(outfuns) > 1) {
       numfuns[i,1] <- nrow(outfuns)
     } else {
-      if (nchar(outfuns[1,"functions"]) > 0) numfuns[i,11] <- 1
+      if (nchar(outfuns[1,"functions"]) > 0) numfuns[i,1] <- 1
     }
     allfiles <- rbind(allfiles,outfuns)
   }
   allfilesort <- allfiles[order(allfiles[,"functions"]),]
   allrefs <- matrix(0,nrow=0,ncol=1)
-  for (i in 1:nfiles) {# i = 1
+  for (i in 1:nfiles) {# i = 8
     if (numfuns[i] > 0) {
        allrefs <- rbind(allrefs,findfuns(indir,files[i],
                                          allfilesort[,"functions"]))
@@ -1079,7 +1100,6 @@ extractRcode <- function(indir,rmdfile,filename="out.R") { # indir=indir; rmdfil
 #' @examples
 #' print("wait on suitable data-set")
 findfuns <- function(indir,infile,allfuns) { # indir=indir;infile=files[i]; allfuns=allfilesort[,"functions"]
-  # indir=ddir;infile=files[1]; allfuns=allfilesort[,"functions"]
   infile <- file.path(indir,infile)
   numfun <- length(allfuns)
   content <- readLines(con=infile)
@@ -1105,7 +1125,7 @@ findfuns <- function(indir,infile,allfuns) { # indir=indir;infile=files[i]; allf
   } else {
     bounds[,2] <- length(content)
   }
-  for (i in 1:nfun) { # i=1
+  for (i in 1:nfun) { # i=10
     funname <- removeEmpty(unlist(strsplit(content[funLines[i]],"<-"))[1])
     funcont <- content[bounds[i,1]:bounds[i,2]]
     testhash <- substr(funcont,1,5)
@@ -1558,7 +1578,7 @@ lininterpol <- function(invect) {
 #'
 #' @examples
 #' print("wait for an example")
-listfuns <- function(infile) { # infile=paste0(ddir,filen[1]); 
+listfuns <- function(infile) { # infile=paste0(indir,files[i])
   content <- readLines(con=infile)
   if (length(grep("/",infile) > 0)) {
     rfun <- tail(unlist(strsplit(infile,"/")),1)

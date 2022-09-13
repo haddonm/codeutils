@@ -2,24 +2,22 @@
 % Please edit documentation in R/rutils.R
 \name{classDF}
 \alias{classDF}
-\title{classDF - tabluate the class of each column in a da}
+\title{classDF - tabulate the class of each column in a data.frame}
 \usage{
 classDF(dataframe)
 }
 \arguments{
 \item{dataframe}{\itemize{
-\item the input dataframe for examination
+\item the input data.frame for examination
 }}
 }
 \value{
 generates paired column names with their classes
 }
 \description{
-classDF - tabluate the class of each column in a dataframe.
+classDF - tabulate the class of each column in a data.frame.
 }
 \examples{
-\dontrun{
  data(ChickWeight)
  classDF(ChickWeight)
-}
 }

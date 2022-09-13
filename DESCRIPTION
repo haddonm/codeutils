@@ -1,6 +1,6 @@
 Package: codeutils
 Title: Contains a Series of Utility Functions for File Handling and Programming
-Version: 0.0.1
+Version: 0.0.2
 Author: <malcolm.haddon@gmail.com>
 Maintainer: <malcolm.haddon@gmail.com>
 Description: Contains a Series of Utility Functions for File Handling, 
