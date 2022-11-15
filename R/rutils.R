@@ -615,7 +615,10 @@ printV <- function(invect,label=c("value","index")) {
 #' @description properties - used to check a data.frame before
 #'     standardization. The maximum and minimum are constrained to four
 #'     decimal places. It allows for columns of NAs and for Posix 
-#'     columns.
+#'     columns. In case one uses tibbles this function now checks and internally
+#'     changes the indat into a strict data.frame. This will not influence the
+#'     external use but it does allow the properties to be obtained. 
+#'     
 #' @param indat the data.frame containing the data fields to be used
 #'     in the subsequent standardization. It tabulates the number of
 #'     NAs and the number of unique values for each variable and finds
@@ -637,6 +640,10 @@ properties <- function(indat,dimout=FALSE) {  # indat=sps1; dimout=FALSE
     mini <- min(x,na.rm=TRUE)
     maxi <- max(x,na.rm=TRUE)
     return(c(mini,maxi))
+  }
+  inclass <- class(indat)
+  if ("tbl" %in% inclass) {
+    indat <- data.frame(unclass(indat), stringsAsFactors = FALSE)
   }
   if(dimout) print(dim(indat))
   isna <- sapply(indat,function(x) sum(is.na(x)))
