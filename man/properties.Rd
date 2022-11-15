@@ -24,7 +24,9 @@ number of unique values, and minimum and maximum (where possible).
 properties - used to check a data.frame before
 standardization. The maximum and minimum are constrained to four
 decimal places. It allows for columns of NAs and for Posix
-columns.
+columns. In case one uses tibbles this function now checks and internally
+changes the indat into a strict data.frame. This will not influence the
+external use but it does allow the properties to be obtained.
 }
 \examples{
 \dontrun{

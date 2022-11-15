@@ -615,7 +615,10 @@ printV <- function(invect,label=c("value","index")) {
 #' @description properties - used to check a data.frame before
 #'     standardization. The maximum and minimum are constrained to four
 #'     decimal places. It allows for columns of NAs and for Posix 
-#'     columns.
+#'     columns. In case one uses tibbles this function now checks and internally
+#'     changes the indat into a strict data.frame. This will not influence the
+#'     external use but it does allow the properties to be obtained. 
+#'     
 #' @param indat the data.frame containing the data fields to be used
 #'     in the subsequent standardization. It tabulates the number of
 #'     NAs and the number of unique values for each variable and finds
@@ -638,6 +641,7 @@ properties <- function(indat,dimout=FALSE) {  # indat=sps1; dimout=FALSE
     maxi <- max(x,na.rm=TRUE)
     return(c(mini,maxi))
   }
+  indat <- detibble(indat)
   if(dimout) print(dim(indat))
   isna <- sapply(indat,function(x) sum(is.na(x)))
   uniques <- sapply(indat,function(x) length(unique(x)))
@@ -830,6 +834,29 @@ toXL <- function(x,output=FALSE) {
   write.table(x,"clipboard",sep="\t")
   if(output) print(x)
 }
+
+#' @title detibble if the input is a tibble it converts it back to a data.frame
+#' 
+#' @description detibble is used to ensure that if an input object is a tibble
+#'     then it is returned as a base R data.frame. This is sometimes needed as
+#'     tibbles can upset some base R functionality.
+#'
+#' @param indat any matrix like data.frame or tibble
+#'
+#' @return a data.frame
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # syntax
+#' detibble(tibble)
+#' }
+detibble <- function(indat) {
+  if ("tbl" %in% class(indat)) {
+    indat <- as.data.frame(unclass(indat), stringsAsFactors = FALSE)
+  } 
+  return(indat)
+} # end of detibble
 
 #' @title which.closest find the number closest to a given value
 #'
