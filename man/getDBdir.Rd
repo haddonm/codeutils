@@ -7,11 +7,12 @@
 getDBdir()
 }
 \value{
-the path to the DroBox directory
+the path to the DropBox directory
 }
 \description{
-getDBdir is needde where multiple computers have different
-names.
+getDBdir identifies the path to DropBox within the users
+sub-directory within the C:/users/ directory. If not present then it
+returns NULL and gives a warning.
 }
 \examples{
 getDBdir()

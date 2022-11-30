@@ -1172,23 +1172,22 @@ findfuns <- function(indir,infile,allfuns) { # indir=indir;infile=files[i]; allf
 
 #' @title getDBdir identifies the DropBox path
 #'
-#' @description getDBdir is needde where multiple computers have different 
-#'    names.
+#' @description getDBdir identifies the path to DropBox within the users 
+#'     sub-directory within the C:/users/ directory. If not present then it 
+#'     returns NULL and gives a warning.
 #'
-#' @return the path to the DroBox directory
+#' @return the path to the DropBox directory
 #' @export
 #'
 #' @examples
 #' getDBdir()
 getDBdir <- function() {
-  if (dir.exists("C:/Users/Malcolm/Dropbox")) {
-    prefixdir <- "C:/Users/Malcolm/Dropbox/"
+  if (dir.exists("~/../DropBox")) {
+    prefixdir <- "~/../DropBox/"
   } else { 
-    if (dir.exists("C:/Users/had06a/DropBox")) {
-      prefixdir <- "C:/Users/had06a/DropBox/" 
-    } else {
-      prefixdir <- "C:/Users/User/Dropbox/"
-    }
+    cat("No DropBox found in the users sub-directory within C:/users/  \n")
+    cat("output set to NULL   \n")
+    prefixdir <- NULL
   }
   return(prefixdir)
 } # end of getDBdir
