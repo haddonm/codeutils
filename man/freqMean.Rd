@@ -4,12 +4,12 @@
 \alias{freqMean}
 \title{freqMean calculates the mean and stdev of count data}
 \usage{
-freqMean(values, infreqs)
+freqMean(values, counts)
 }
 \arguments{
 \item{values}{the values for which there are counts}
 
-\item{infreqs}{the counts for each of the values empty cells can be
+\item{counts}{the counts for each of the values empty cells can be
 either 0 or NA}
 }
 \value{
@@ -22,7 +22,7 @@ return a vector of two numbers.
 }
 \examples{
 \dontrun{
-vals <- c(1,2,3,4,5)
+vals <- c(1,2,3,4,5)    values=dat[,1];counts=dat[,2]
 counts <- c(3,NA,7,4,2)
 freqMean(vals,counts)  # should give 3.125 and 1.258306
 }

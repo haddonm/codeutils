@@ -144,7 +144,7 @@ facttonum <- function(invect){
 #'     return a vector of two numbers.
 #'
 #' @param values the values for which there are counts
-#' @param infreqs the counts for each of the values empty cells can be
+#' @param counts the counts for each of the values empty cells can be
 #'     either 0 or NA
 #'
 #' @return a vector containing the mean and st.dev.
@@ -152,23 +152,28 @@ facttonum <- function(invect){
 #'
 #' @examples
 #' \dontrun{
-#' vals <- c(1,2,3,4,5)
+#' vals <- c(1,2,3,4,5)    values=dat[,1];counts=dat[,2]
 #' counts <- c(3,NA,7,4,2)
 #' freqMean(vals,counts)  # should give 3.125 and 1.258306
 #' }
-freqMean <- function(values,infreqs) {
+freqMean <- function(values,counts) {
   N <- length(values)
-  if (N != length(infreqs)) {
+  if (N != length(counts)) {
     cat("vectors have different lengths \n")
     ans <- c(NA,NA)
     names(ans) <- c("mean","stdev")
   } else {
-    nobs <- sum(infreqs,na.rm=T)
-    sumX <- sum(values * infreqs,na.rm=T)
+    pick <- which(is.na(counts))
+    if (length(pick) > 0) {
+      counts <- counts[-pick]
+      values <- values[-pick]
+    }
+    nobs <- sum(counts,na.rm=T)
+    sumX <- sum(values * counts,na.rm=T)
     av <- sumX/nobs
-    if (length(infreqs[infreqs > 0.01]) > 1) {
-      sumX2 <- sum(values * values * infreqs,na.rm=T)
-      stdev <- sqrt((sumX2 - (sumX * sumX)/nobs)/(nobs-1))
+    if (length(counts[counts > 0.01]) > 1) {
+      sumX2 <- sum(values * 1.0 * values * counts,na.rm=T)
+      stdev <- sqrt((sumX2 - (sumX * 1.0 * sumX)/nobs)/(nobs-1))
     } else { stdev <- NA
     }
     ans <- c(av,stdev)
