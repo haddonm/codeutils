@@ -128,10 +128,10 @@ countgtOne <- function(invect) {
 #'  facttonum(x)
 #' }
 facttonum <- function(invect){
-  if (class(invect) == "factor") {
+  if (inherits(invect,"factor")) {
     outvect <- suppressWarnings(as.numeric(levels(invect))[invect])
   }
-  if (class(invect) == "numeric") outvect <- invect
+  if (inherits(invect,"numeric")) outvect <- invect
   if (any(is.na(outvect)))
     warning("NAs produced, input vector may have non-numbers present \n")
   return(outvect)
@@ -377,12 +377,12 @@ greplow <- function(pattern,x) {
 #' info(x,FALSE)
 #' x <- list(x=5,y=6,z=7)
 #' info(x)
-info <- function(invar,verbose=FALSE) {
+info <- function(invar,verbose=FALSE) { # invar=x; verbose=TRUE
   cat("Class: ",class(invar),"\n")
-  str(invar,max.level=1)
+  if (verbose) print(str(invar,max.level=1))
   cat("\n")
   categories <-  c("matrix","array","data.frame")
-  if (class(invar) %in% categories) {
+  if (inherits(invar,categories)) {
     cat("Dimension: ",dim(invar),"\n")
     if (verbose) print(head(invar,2))
   } else {
@@ -1380,7 +1380,7 @@ digitsbyrow <- function(df, digits) {
   tmp1 <- data.frame(t(tmp1))
   rownames(tmp1) <- rownames(df)
   colnames(tmp1) <- colnames(df)
-  if (class(df)[1] == "matrix") tmp1 <- as.matrix(tmp1)
+  if (inherits(df[1],"matrix")) tmp1 <- as.matrix(tmp1)
   return(tmp1)
 } # end of digitsbyrow
 
