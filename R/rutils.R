@@ -1187,8 +1187,9 @@ findfuns <- function(indir,infile,allfuns) { # indir=indir;infile=files[i]; allf
 #' @examples
 #' getDBdir()
 getDBdir <- function() {
-  if (dir.exists("~/../DropBox")) {
-    prefixdir <- "~/../DropBox/"
+  dropdir <- paste0("c:/Users/",Sys.info()[["user"]],"/DropBox")
+  if (dir.exists(dropdir)) {
+    prefixdir <- dropdir
   } else { 
     cat("No DropBox found in the users sub-directory within C:/users/  \n")
     cat("output set to NULL   \n")

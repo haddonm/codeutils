@@ -1,7 +1,7 @@
 Package: codeutils
 Title: Contains a Series of Utility Functions for File Handling and Programming
-Version: 0.0.4
-Date: 2023-02-18
+Version: 0.0.5
+Date: 2023-07-05
 Authors@R: person("Malcolm", "Haddon", 
                   email = "malcolm.haddon@gmail.com", 
                   role = c("aut", "cre"))

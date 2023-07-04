@@ -11,6 +11,8 @@ facilitate the use of R and programming in R
 
 Latest Developments:
 
+- 2023-06-05 0.0.5 Generalized getDBdir
+
 - 2022-11-15 0.0.3 Slight modification to properties() to allow it to be
   used with tibbles
 
