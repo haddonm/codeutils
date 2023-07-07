@@ -858,7 +858,8 @@ toXL <- function(x,output=FALSE) {
 #' }
 detibble <- function(indat) {
   if ("tbl" %in% class(indat)) {
-    indat <- as.data.frame(unclass(indat), stringsAsFactors = FALSE)
+    indat <- as.data.frame(unclass(indat), stringsAsFactors = FALSE,
+                           check.names=FALSE)
   } 
   return(indat)
 } # end of detibble
@@ -1281,6 +1282,123 @@ identifyfuns <- function(content) {
   if (length(omit2) > 0) funLines <- funLines[-omit2]
   return(funLines)
 } # end of identifyfuns
+
+#' @title pathkind finds the type of separator used in a path
+#'
+#' @description pathkind finds the type of separator used in a path,
+#'     this is either a '/' or a '\\'
+#'
+#' @param inpath - the path to be analysed
+#'
+#' @return the type of path divider, either a 0 = '\\' or a
+#'    1 = '/'
+#' @export
+#'
+#' @examples
+#' indir <- "C:/Users/Malcolm/Dropbox/rcode2/aMSE/data-raw"
+#' pathkind(indir)
+pathkind <- function(inpath) {
+  kindpath <- "/"
+  if (length(grep("\\\\",inpath)) > 0) kindpath <- "\\"
+  return(kindpath)
+} # end of pathkind
+
+#' @title pathfinish determines what character is at the end of a path
+#'
+#' @description pathfinish determines what character is at the end of a
+#'     path uses pathkind to get the separator and then checks the end
+#'     character
+#'
+#' @param inpath the path to be analysed
+#'
+#' @return the end character of the path; either '', '/', or "\\"
+#' @export
+#'
+#' @examples
+#'   indir <- "C:/Users/Malcolm/Dropbox/rcode2/aMSE/data-raw"
+#'   pathfinish(indir)
+pathfinish <- function(inpath) {
+  lookfor <- pathkind(inpath)
+  endpath <- ""
+  if (lookfor == "/") {
+    if(length(grep("/$",inpath)) > 0) endpath <- "/"
+  } else {
+    if(length(grep("\\\\$",inpath)) > 0) endpath <- "\\"
+  }
+  return(endpath)
+} # end of pathfinish
+
+#' @title pathstart determines what character(s) is at the start of a path
+#'
+#' @description pathstart determines what character(s) is at the start of a
+#'     path uses pathkind to get the separator and then checks the start
+#'     character
+#'
+#' @param inpath the path to be analysed
+#'
+#' @return the start character of the path; either '', '/', or "\\"
+#' @export
+#'
+#' @examples
+#'   indir <- "C:/Users/Malcolm/Dropbox/rcode2/aMSE/data-raw"
+#'   pathstart(indir)
+pathstart <- function(inpath) {  # path2="A_CodeUse/aMSEDoc/figures/install_tar.gz_file.png"
+  lookfor <- pathkind(inpath)
+  startpath <- ""
+  if (lookfor == "/") {
+    if(length(grep("^/",inpath)) > 0) startpath <- "/"
+  } else {
+    if(length(grep("^\\\\",inpath)) > 0) startpath <- "\\"
+  }
+  return(startpath)
+} # end of pathstart
+
+
+#' @title pathtopath combines two paths accounting for type of separator
+#'
+#' @description pathtopath combines two paths, the second of which could
+#'     include a filename, while taking into account the type of separator.
+#'     It also prevents a doubling up or missing out of said separator
+#'     between the two paths being joined. If the separator type differs
+#'     between the two input paths the functions stops with a warning.
+#'
+#' @param path1 the first path to be added together
+#' @param path2 the second path which is to be added to the first. This may
+#'     include a filename is so desired.
+#'
+#' @return the combined path
+#' @export
+#'
+#' @examples
+#'   in1 <- "c:/users/Malcolm/DropBox"
+#'   in2 <- "aMSEUse/scenarios/EG"
+#'   pathtopath(in1, in2)  # no separator character between the paths
+#'   in2 <- "/aMSEUse/scenarios/EG"
+#'   pathtopath(in1, in2)  # path2 with a separator
+#'   in1 <- "c:/users/Malcolm/DropBox/"
+#'   pathtopath(in1, in2)  # both paths with a separator
+#'   in1 <- "c:\\users\\Malcolm\\DropBox"
+#'   in2 <- "aMSEUse\\scenarios\\EG"
+#'   pathtopath(in1, in2)  # a different separator but missing from both
+pathtopath <- function (path1, path2) { # path1=dropdir; path2=filen
+  typepath <- pathkind(path1)  #
+  typepath2 <- pathkind(path2)
+  if (typepath != typepath2)
+    stop(cat("The two paths in pathtopath are using different separators! \n"))
+  endpath1 <- pathfinish(path1)
+  startpath2 <- pathstart(path2)
+  if ((nchar(endpath1) == 0) & (nchar(startpath2) == 0)) {
+    outpath <- paste(path1, path2, sep = typepath)
+  } else {
+    if ((endpath1 != startpath2)) {
+      outpath <- paste(path1,path2,sep="")
+    } else {
+      lenc <- nchar(typepath) + 1
+      outpath <- paste(path1,substr(path2,lenc,nchar(path2)),sep="")
+    }
+  }
+  return(outpath)
+} # end of pathtopath
 
 #' @title pkgfuns names all functions within a package
 #'
