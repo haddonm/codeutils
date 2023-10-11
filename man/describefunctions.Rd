@@ -4,7 +4,7 @@
 \alias{describefunctions}
 \title{describefunctions lists all R functions in a set of files}
 \usage{
-describefunctions(indir, files = "", outfile = "")
+describefunctions(indir, files = "", outfile = "", sortby = "functions")
 }
 \arguments{
 \item{indir}{the directory in which to find the R files}
@@ -16,6 +16,10 @@ functions, default="", which means all R files in indir will be used}
 should be saved. default="", which means the output will only be
 returned invisibly. If outfile has a fullpath csv filename then it will
 also be written to that file as well as retunred invisibly}
+
+\item{sortby}{how should the output be sorted? deffault = "functions", which
+means the functions will be sorted by name. The alternative is "file",
+which will sort the output by input filename}
 }
 \value{
 It can produce a csv file but also returns the results invisibly

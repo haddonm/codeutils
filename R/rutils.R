@@ -639,14 +639,23 @@ printV <- function(invect,label=c("value","index")) {
 #'  data(abdat)
 #'  properties(abdat$fish)
 #' }
-properties <- function(indat,dimout=FALSE) {  # indat=sps1; dimout=FALSE
+properties <- function(indat,dimout=FALSE) {  # indat=ab; dimout=FALSE
+  indat <- detibble(indat)
   dominmax <- function(x) {
     if (length(which(x > 0)) == 0) return(c(NA,NA))
     mini <- min(x,na.rm=TRUE)
     maxi <- max(x,na.rm=TRUE)
     return(c(mini,maxi))
   }
-  indat <- detibble(indat)
+  if (length(indat$geometry > 0)) {
+    pickg <- which(colname(indat) == "geometry")
+    columns <- ncol(indat)
+    if (pickg == columns) {
+      indat <- indat[,]
+    }
+    indat <- indat[,c(1:(pickg-1),(pickg+1:columns))]
+    cat("geometry 'column' omitted \n")
+  }
   if(dimout) print(dim(indat))
   isna <- sapply(indat,function(x) sum(is.na(x)))
   uniques <- sapply(indat,function(x) length(unique(x)))
@@ -942,6 +951,13 @@ wtedmean <- function(x,wts) {
 #'     should be saved. default="", which means the output will only be 
 #'     returned invisibly. If outfile has a fullpath csv filename then it will
 #'     also be written to that file as well as retunred invisibly
+#' @param sortby how should the output be sorted? deffault = "functions", which
+#'     means the functions will be sorted by name. The alternative is "file",
+#'     which will sort the output by input filename 
+#'     
+#' @seealso{
+#'    \link{findfuns}, \link{identifyfuns}
+#' }     
 #'
 #' @return It can produce a csv file but also returns the results invisibly 
 #' @export
@@ -965,8 +981,8 @@ wtedmean <- function(x,wts) {
 #'  filename <- tail(unlist(strsplit(filen,"\\",fixed=TRUE)),1)
 #'  x <- describefunctions(indir=usedir,files=filename,outfile="")
 #'  x
-describefunctions <- function(indir,files="",outfile="") {
-  # indir=indir; files=files;outfile=outfile
+describefunctions <- function(indir,files="",outfile="",sortby="functions") {
+  # indir=indir; files=files;outfile="";sortby="functions"
   if (nchar(files[1]) == 0) {
     dirfiles <- dir(indir)
     pickfiles <- grep(".R",dirfiles,ignore.case=TRUE)
@@ -977,7 +993,7 @@ describefunctions <- function(indir,files="",outfile="") {
   nfiles <- length(files)
   numfuns <- matrix(0,nrow=nfiles,ncol=1,dimnames=list(files,c("nfuns")))
   allfiles <- NULL
-  for (i in 1:nfiles) { # i = 4
+  for (i in 1:nfiles) { # i = 1
     outfuns <- listfuns(paste0(indir,files[i]))
     if (nrow(outfuns) > 1) {
       numfuns[i,1] <- nrow(outfuns)
@@ -986,7 +1002,7 @@ describefunctions <- function(indir,files="",outfile="") {
     }
     allfiles <- rbind(allfiles,outfuns)
   }
-  allfilesort <- allfiles[order(allfiles[,"functions"]),]
+  allfilesort <- allfiles[order(allfiles[,sortby]),]
   allrefs <- matrix(0,nrow=0,ncol=1)
   for (i in 1:nfiles) {# i = 8
     if (numfuns[i] > 0) {
@@ -1125,6 +1141,10 @@ extractRcode <- function(indir,rmdfile,filename="out.R") { # indir=indir; rmdfil
 #'     function
 #' @param allfuns a data.frame of functions and their properties listed in 
 #'     the order of the sorted function names in the 'function' column 
+#'     
+#' @seealso{
+#'    \link{describefunctions}, \link{identifyfuns}
+#' }
 #'
 #' @return the same data.frame except that the references column will have been
 #'     populated
@@ -1258,6 +1278,10 @@ getnamespace <- function(fun) {
 #'
 #' @param content the output of applying readLines to a text file containing 
 #'     R code.
+#'     
+#' @seealso{
+#'    \link{describefunctions}, \link{findfuns}
+#' }     
 #'
 #' @return a vector of line numbers identifying the start of all functions 
 #'     within the content. This may be a vector of zero length if there are no
