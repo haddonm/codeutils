@@ -105,6 +105,46 @@ countgtOne <- function(invect) {
   return(length(pick1)/length(invect))
 }
 
+#' @title expandcolumns inserts missing matrix columns where colnames are numbers
+#' 
+#' @description expandcolumns takes in a matrix that has column names that are 
+#'     numbers. These might be years or some other integers. If there are years
+#'     missing this function will insert them into a larger matrix which is then
+#'     returned.
+#'
+#' @param x a matrix with integers as column names. This might be a series of 
+#'     counts at size for a series of years or counts at age for a number of 
+#'     years. If some years of data are missing this function will insert empty
+#'     columns into a larger matrix so that when plotted a true view of 
+#'     available data can be presented. If there are no missing years then the
+#'     original matrix is returned.
+#'
+#' @return a matrix with integers (years) as column names is returned with no
+#'     missing years, even where some years have no data.
+#' @export
+#'
+#' @examples
+#' dat <- matrix(trunc(rnorm(50, mean=20, sd=4)),nrow=10,ncol=5,
+#'               dimnames=list(1:10,c(1990,1991,1995,1997,1999)))
+#' print(dat)
+#' print(expandcolumns(dat))               
+expandcolumns <- function(x) {
+  numcl <- nrow(x)    # number of size classes or ages
+  numyrs <- ncol(x)   # number of years of observations
+  origyrs <- as.numeric(colnames(x))
+  allyrs <- origyrs[1]:origyrs[numyrs]
+  numall <- length(allyrs)
+  if (numall > numyrs) {
+    expandx <- matrix(0,nrow=numcl,ncol=numall,
+                      dimnames=list(rownames(x),allyrs))
+    pickorig <- match(origyrs,allyrs)
+    expandx[,pickorig] <- x
+  } else {
+    expandx <- x
+  }
+  return(expandx)
+} # end of expandcolumns
+
 #' @title facttonum converts a vector of numeric factors into numbers
 #'
 #' @description facttonum converts a vector of numeric factors into numbers.
@@ -648,7 +688,7 @@ properties <- function(indat,dimout=FALSE) {  # indat=ab; dimout=FALSE
     return(c(mini,maxi))
   }
   if (length(indat$geometry > 0)) {
-    pickg <- which(colname(indat) == "geometry")
+    pickg <- which(colnames(indat) == "geometry")
     columns <- ncol(indat)
     if (pickg == columns) {
       indat <- indat[,]

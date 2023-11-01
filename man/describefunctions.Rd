@@ -54,3 +54,8 @@ txt <- c("# this is a comment",
  x <- describefunctions(indir=usedir,files=filename,outfile="")
  x
 }
+\seealso{
+{
+\link{findfuns}, \link{identifyfuns}
+}
+}

@@ -32,3 +32,8 @@ txt <- c("# this is a comment",
 "anotherdummy <- function() { return(NULL) }")
 identifyfuns(txt)
 }
+\seealso{
+{
+\link{describefunctions}, \link{findfuns}
+}
+}

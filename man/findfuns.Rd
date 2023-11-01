@@ -32,3 +32,8 @@ functions. This allows them to be cross referenced
 \examples{
 print("wait on suitable data-set")
 }
+\seealso{
+{
+\link{describefunctions}, \link{identifyfuns}
+}
+}
