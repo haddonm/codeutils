@@ -430,6 +430,70 @@ info <- function(invar,verbose=FALSE) { # invar=x; verbose=TRUE
   }
 } # end of info
 
+#' @title insertmissingRC inserts missing row and columns, which must be numbers
+#' 
+#' @description insertmissingRC takes in a matrix that has row and column names 
+#'     that are ordered integers These might be years, size classes, or some 
+#'     other integers, but they must be in ascending order. If there are rows or 
+#'     columns missing this function will insert them into a larger matrix which 
+#'     is then returned. The default increment for the row and column names is
+#'     1, but the option is there to change this if needed. If non-numeric 
+#'     row or column names occur a fatal error is called and the function stops 
+#'     with a message.
+#'
+#' @param x a matrix with ordered integers as row and column names. If some 
+#'     years (cols) or size-classes (rows) of data are missing this 
+#'     function will insert empty rows and/or columns into a larger matrix so 
+#'     that when plotted a true view of available data can be presented that
+#'     illustrates what data is missing from the series. If there are no missing 
+#'     rows or columns then the original matrix is returned.
+#' @param inccol the increment used in the sequence of column names, default=1
+#' @param incrow the increment used in the sequence of row names, default=1
+#' @return a matrix with integers (years) as column names is returned with no
+#'     missing years, even where some years have no data.
+#' @export
+#'
+#' @examples
+#' dat <- matrix(trunc(rnorm(50, mean=20, sd=4)),nrow=10,ncol=5,
+#' dimnames=list(c(2,4,6,8,14,16,18,20,24,26),
+#'               c("1990","1991","1995","1997","1999")))
+#' print(dat)
+#' print(insertmissingRC(dat,inccol=1,incrow=2))               
+#' dat <- matrix(trunc(rnorm(50, mean=20, sd=4)),nrow=10,ncol=5,
+#' dimnames=list(c(2,4,6,8,14,16,18,20,24,26),
+#'               c("1990","1991A","1995","1997","1999")))
+#' # running  insertmissingRC(dat,incrow=2) would throw an eror
+insertmissingRC <- function(x,inccol=1,incrow=1) { # x=dat
+  numcl <- ncol(x)   # eg number of years of observations
+  origcl <- as.numeric(colnames(x))
+  if (any(is.na(origcl))) 
+    stop(cat("Fatal Error: non-numeric column names input to insertmissingRC \n"))
+  numrw <- nrow(x)    # eg number of size classes or ages
+  origrw <- as.numeric(rownames(x))
+  if (any(is.na(origrw))) 
+    stop(cat("Fatal Error: non-numeric row names input to insertmissingRC \n"))  
+  allcl <- seq(origcl[1],origcl[numcl],inccol)
+  numall <- length(allcl)
+  if (numall > numcl) {
+    expandx <- matrix(0,nrow=numrw,ncol=numall,
+                      dimnames=list(rownames(x),allcl))
+    pickorigcl <- match(origcl,allcl)
+    expandx[,pickorigcl] <- x
+  } else {
+    expandx <- x
+  }
+  allrw <- seq(origrw[1],origrw[numrw],incrow)
+  numallrw <- length(allrw)
+  if (numallrw > numrw) {
+    expandx2 <- matrix(0,nrow=numallrw,ncol=numall,
+                       dimnames=list(allrw,allcl))
+    pickorigrw <- match(origrw,allrw)
+    expandx2[pickorigrw,] <- expandx
+    expandx <- expandx2
+  }
+  return(expandx)
+} # end of insertmissingRC
+
 #' @title makelabel generates a label from text and values
 #'
 #' @description makelabel It is common to want a label with text and a series 
@@ -1022,7 +1086,7 @@ wtedmean <- function(x,wts) {
 #'  x <- describefunctions(indir=usedir,files=filename,outfile="")
 #'  x
 describefunctions <- function(indir,files="",outfile="",sortby="functions") {
-  # indir=indir; files=files;outfile="";sortby="functions"
+  # indir=indir; files=files;outfile=outfilen;sortby="functions"
   if (nchar(files[1]) == 0) {
     dirfiles <- dir(indir)
     pickfiles <- grep(".R",dirfiles,ignore.case=TRUE)
@@ -1053,7 +1117,7 @@ describefunctions <- function(indir,files="",outfile="",sortby="functions") {
     }
   }
   allfiles[,"references"] <- allrefs
-  x <- allfiles[order(allfiles[,"functions"]),]
+  x <- allfiles[order(allfiles[,sortby]),]
   x[,"crossreference"] <- ""
   nfun <- nrow(x)
   for (i in 1:nfun) {
@@ -1064,8 +1128,9 @@ describefunctions <- function(indir,files="",outfile="",sortby="functions") {
       x[i,"crossreference"] <- paste0(x[pickf,"functions"],collapse=", ")
     }
   }
-  if (nchar(outfile) > 5) write.csv(x,file = outfile)
-  return(invisible(x))
+  xfinal <- x[,c(1,2,3,4,6,5)]
+  if (nchar(outfile) > 5) write.csv(xfinal,file = outfile)
+  return(invisible(xfinal))
 } # end of describefunctions
 
 #' @title extractpathway traces the sequence of functions calls within a function
@@ -1842,7 +1907,7 @@ listfuns <- function(infile) { # infile=paste0(indir,files[i])
       out[i] <- gsub("<-function","",out[i])
     }
   }
-  columns <- c("syntax","linenumber","file","functions","references")
+  columns <- c("linenumber","file","functions","references","syntax")
   rows <- paste0(rfile,1:n)
   outfuns <- as.data.frame(matrix(NA,nrow=n,ncol=length(columns),
                                   dimnames=list(rows,columns)))

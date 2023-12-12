@@ -11,6 +11,9 @@ facilitate the use of R and programming in R
 
 Latest Developments:
 
+- 2023-12-12 0.0.8 added insertmissingRC which allows plots to better
+  reflect missing data.
+
 - 2023-07-07 0.0.6 added pathtopath and associated functions
 
 - 2023-07-05 0.0.5 Generalized getDBdir
