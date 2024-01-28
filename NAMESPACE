@@ -2,6 +2,7 @@
 
 export("%ni%")
 export(classDF)
+export(confirmdir)
 export(countNAs)
 export(countgtOne)
 export(countgtzero)
