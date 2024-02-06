@@ -225,25 +225,30 @@ freqMean <- function(values,counts) {
 #' @title geomean log-normal bias corrected geometric mean of a vector
 #'
 #' @description Calculates log-normal bias corrected geometric mean of a 
-#'     vector. NAs and zeros are removed from consideration.
+#'     vector. NAs and zeros are removed from consideration. If a vector of
+#'     length zero is entered then geomean returns 0.
 #' @param invect is a vector of numbers in linear space.
 #' @return The bias-corrected geometric mean of the vector
 #' @export geomean
 #' @examples
-#' \dontrun{
 #'  x <- c(1,2,3,4,5,6,7,8,9)
 #'  geomean(x)
-#' }
-geomean <- function(invect) {
-  pick <- which((invect <= 0.0))
-  if (length(pick) == 0) {
-    avCE <- mean(log(invect),na.rm=TRUE)
-    stdev <- sd(log(invect),na.rm=TRUE)
+#'  geomean(c(NA,0,NA,0))
+#'  geomean()
+geomean <- function(invect=NULL) {
+  if ((length(invect) == 0) | (sum(invect,na.rm=TRUE) == 0.0)) {
+    gmean <- 0
   } else {
-    avCE <- mean(log(invect[-pick]),na.rm=TRUE)
-    stdev <- sd(log(invect[-pick]),na.rm=TRUE)
+    pick <- which((invect <= 0.0))
+    if (length(pick) == 0) {
+      avCE <- mean(log(invect),na.rm=TRUE)
+      stdev <- sd(log(invect),na.rm=TRUE)
+    } else {
+      avCE <- mean(log(invect[-pick]),na.rm=TRUE)
+      stdev <- sd(log(invect[-pick]),na.rm=TRUE)
+    }
+    gmean <- exp(avCE + (stdev^2)/2)
   }
-  gmean <- exp(avCE + (stdev^2)/2)
   return(gmean)
 }  # end of geomean
 

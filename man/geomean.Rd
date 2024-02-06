@@ -4,7 +4,7 @@
 \alias{geomean}
 \title{geomean log-normal bias corrected geometric mean of a vector}
 \usage{
-geomean(invect)
+geomean(invect = NULL)
 }
 \arguments{
 \item{invect}{is a vector of numbers in linear space.}
@@ -14,11 +14,12 @@ The bias-corrected geometric mean of the vector
 }
 \description{
 Calculates log-normal bias corrected geometric mean of a
-vector. NAs and zeros are removed from consideration.
+vector. NAs and zeros are removed from consideration. If a vector of
+length zero is entered then geomean returns 0.
 }
 \examples{
-\dontrun{
  x <- c(1,2,3,4,5,6,7,8,9)
  geomean(x)
-}
+ geomean(c(NA,0,NA,0))
+ geomean()
 }
