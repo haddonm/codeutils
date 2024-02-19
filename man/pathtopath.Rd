@@ -33,4 +33,11 @@ between the two input paths the functions stops with a warning.
   in1 <- "c:\\\\users\\\\Malcolm\\\\DropBox"
   in2 <- "aMSEUse\\\\scenarios\\\\EG"
   pathtopath(in1, in2)  # a different separator but missing from both
+  in2 <- "/aMSEUse/scenarios/EG"
+  pathtopath(in1, in2)  # a different separators
+  in1 <- "c:/users/Malcolm/dropbox/"
+  in2 <- "aMSEUse\\\\scenarios\\\\EG"
+  pathtopath(in1, in2)  # a different separators the other way around
+  in2 <- "filename.csv"
+  pathtopath(in1, in2)  # join path to filename that has no spearator
 }

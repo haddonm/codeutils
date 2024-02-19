@@ -1555,11 +1555,26 @@ pathstart <- function(inpath) {  # path2="A_CodeUse/aMSEDoc/figures/install_tar.
 #'   in1 <- "c:\\users\\Malcolm\\DropBox"
 #'   in2 <- "aMSEUse\\scenarios\\EG"
 #'   pathtopath(in1, in2)  # a different separator but missing from both
-pathtopath <- function (path1, path2) { # path1=dropdir; path2=filen
+#'   in2 <- "/aMSEUse/scenarios/EG"
+#'   pathtopath(in1, in2)  # a different separators
+#'   in1 <- "c:/users/Malcolm/dropbox/"
+#'   in2 <- "aMSEUse\\scenarios\\EG"
+#'   pathtopath(in1, in2)  # a different separators the other way around
+#'   in2 <- "filename.csv"
+#'   pathtopath(in1, in2)  # join path to filename that has no spearator
+pathtopath <- function (path1, path2) { # path1=rundir; path2="resultTable.csv"
   typepath <- pathkind(path1)  #
   typepath2 <- pathkind(path2)
-  if (typepath != typepath2)
-    stop(cat("The two paths in pathtopath are using different separators! \n"))
+  if (typepath != typepath2) { # path1="c:\\users\\Malcolm\\DropBox"; path2="/aMSEUse/scenarios/EG"
+    p1 <- grep("\\\\",path1)
+    if (length(p1) > 0) { # path1 uses \\
+      tmp <- unlist(strsplit(path1,"\\\\"))
+      path1 <- paste0(tmp,"/",collapse = "")
+    } else {  # path2 assumed to use \\
+      tmp <- unlist(strsplit(path2,"\\\\"))
+      path2 <- paste0(tmp,"/",collapse = "")
+    }
+  }  
   endpath1 <- pathfinish(path1)
   startpath2 <- pathstart(path2)
   if ((nchar(endpath1) == 0) & (nchar(startpath2) == 0)) {
