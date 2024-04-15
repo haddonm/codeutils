@@ -905,13 +905,14 @@ revsum <- function(x) {
 } # end of revsum
 
 
-#' @title str1 a simple replacement for str(x,max.level=1)
+#' @title str1 a simple replacement for str(x,max.level=1,give.attr=FALSE)
 #' 
 #' @description str1 an abbreviated replacement for str(x,max.level=1), which I 
 #'     put together because to often I make a typo when typing out the full
 #'     str syntax. Hence I find str1 helpful
 #'
 #' @param x the object whose structure is to be listed
+#' @param attrs should the objects attributes be printed? default = FALSE
 #'
 #' @return str(x,max.level=1)
 #' @export
@@ -919,17 +920,18 @@ revsum <- function(x) {
 #' @examples
 #' x <- matrix(rnorm(25,mean=5,sd=1),nrow=5,ncol=5)
 #' str1(x)
-str1 <- function(x){
-  return(str(x,max.level=1))
+str1 <- function(x,attrs = FALSE){
+  return(str(x,max.level=1,give.attr=attrs))
 }
 
-#' @title str2 a simple replacement for str(x,max.level=2)
+#' @title str2 a simple replacement for str(x,max.level=2,give.attr=FALSE)
 #' 
 #' @description str2 an abbreviated replacement for str(x,max.level=2), which I 
 #'     put together because to often I make a typo when typing out the full
 #'     str syntax. For when str1 is not detailed enough.
 #'
 #' @param x the object whose structure is to be listed
+#' @param attrs should the objects attributes be printed? default = FALSE
 #'
 #' @return str(x,max.level=2)
 #' @export
@@ -937,8 +939,8 @@ str1 <- function(x){
 #' @examples
 #' x <- matrix(rnorm(25,mean=5,sd=1),nrow=5,ncol=5)
 #' str2(x)
-str2 <- function(x){
-  return(str(x,max.level=2))
+str2 <- function(x,attrs=FALSE){
+  return(str(x,max.level=2,give.attr=attrs))
 }
 
 #' @title tidynames can replace awkward data.frame names with better ones

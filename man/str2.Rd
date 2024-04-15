@@ -2,12 +2,14 @@
 % Please edit documentation in R/rutils.R
 \name{str2}
 \alias{str2}
-\title{str2 a simple replacement for str(x,max.level=2)}
+\title{str2 a simple replacement for str(x,max.level=2,give.attr=FALSE)}
 \usage{
-str2(x)
+str2(x, attrs = FALSE)
 }
 \arguments{
 \item{x}{the object whose structure is to be listed}
+
+\item{attrs}{should the objects attributes be printed? default = FALSE}
 }
 \value{
 str(x,max.level=2)
