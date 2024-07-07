@@ -2,6 +2,7 @@
 % Please edit documentation in R/codeutils.r
 \docType{package}
 \name{codeutils}
+\alias{codeutils-package}
 \alias{codeutils}
 \title{codeutils: a set of functions to assist with code development}
 \description{
@@ -51,3 +52,8 @@ functions are to be found in the hplot package
 }
 }
 
+\author{
+\strong{Maintainer}: Malcolm Haddon \email{malcolm.haddon@gmail.com} (\href{https://orcid.org/0000-0001-6971-7585}{ORCID})
+
+}
+\keyword{internal}

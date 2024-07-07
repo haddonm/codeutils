@@ -36,8 +36,9 @@
 #'   \item{circle}{draws a circle with a given origin and radius}
 #' }
 #' 
-#' @docType package
 #' @name codeutils
+#' @keywords internal
+"_PACKAGE"
 NULL
 
 #' @importFrom grDevices dev.cur dev.new dev.off png palette

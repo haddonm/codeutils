@@ -10,17 +10,20 @@ extractRcode(indir, rmdfile, filename = "out.R")
 \item{indir}{the directory in which the rmd file is to be found and into
 which the output file will be placed.}
 
-\item{rmdfile}{the name of the Rmd file whose R code is to be extracted}
+\item{rmdfile}{name of Rmd/qmd file whose R code is to be extracted}
 
 \item{filename}{the name of the R file into which the r-code is to go.}
 }
 \value{
-generates an R file in the working directory, otherwise returns nothing
+generates an R file in the indir but returns nothing
 }
 \description{
-extractRcode pulls out the r-code blocks from Rmd files and
-saves them into a separate R file.
+extractRcode pulls out the r-code blocks from Rmd or qmd files
+and saves them into a separate R file. This depends upon the prefix \verb{used to define R blocks at the top and bottom. So it 'knows' where they begin and where they end. Any R-code included that is not encased in  the} prefix will not be extracted.
 }
 \examples{
-print("wait on a real example")
+ddir <- getDBdir()
+# syntax   extractRcode(pathtopath(ddir,"projects/AIRF/NWLML"),
+#                       "Drivers_of_Productivity.qmd",
+#                       filename="productivity.R")
 }

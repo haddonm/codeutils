@@ -1284,22 +1284,28 @@ extractpathway <- function(indir,infun,allfuns) {  #  indir=tempdir(),infun="dum
 
 #' @title extractRcode pulls out the r-code blocks from Rmd files
 #' 
-#' @description extractRcode pulls out the r-code blocks from Rmd files and 
-#'     saves them into a separate R file. 
+#' @description extractRcode pulls out the r-code blocks from Rmd or qmd files 
+#'     and saves them into a separate R file. This depends upon the prefix ```
+#'     used to define R blocks at the top and bottom. So it 'knows' where they
+#'     begin and where they end. Any R-code included that is not encased in 
+#'     the ``` prefix will not be extracted.
 #'
 #' @param indir the directory in which the rmd file is to be found and into
 #'     which the output file will be placed.
-#' @param rmdfile the name of the Rmd file whose R code is to be extracted
+#' @param rmdfile name of Rmd/qmd file whose R code is to be extracted
 #' @param filename the name of the R file into which the r-code is to go. 
 #'
-#' @return generates an R file in the working directory, otherwise returns nothing
+#' @return generates an R file in the indir but returns nothing
 #' @export
 #'
 #' @examples
-#' print("wait on a real example")
-extractRcode <- function(indir,rmdfile,filename="out.R") { # indir=indir; rmdfile=inrmd; filename="out.R"
-  infile <- paste0(indir,"/",rmdfile)
-  fileout <- paste0(indir,"/",filename)
+#' ddir <- getDBdir()
+#' # syntax   extractRcode(pathtopath(ddir,"projects/AIRF/NWLML"),
+#' #                       "Drivers_of_Productivity.qmd",
+#' #                       filename="productivity.R")
+extractRcode <- function(indir,rmdfile,filename="out.R") {
+  infile <- pathtopath(indir,rmdfile)
+  fileout <- pathtopath(indir,filename)
   cat("# R-code from the file ",rmdfile,"\n\n",file=fileout,append=FALSE)
   txt <- readLines(infile)
   pick <- grep("```",txt)
