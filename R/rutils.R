@@ -913,15 +913,16 @@ revsum <- function(x) {
 #'
 #' @param x the object whose structure is to be listed
 #' @param attrs should the objects attributes be printed? default = FALSE
+#' @param ... ellipsis allows str arguments to be included, eg vec.len=4
 #'
-#' @return str(x,max.level=1)
+#' @return str(x,max.level=1,attrs=attrs,...)
 #' @export
 #'
 #' @examples
 #' x <- matrix(rnorm(25,mean=5,sd=1),nrow=5,ncol=5)
 #' str1(x)
-str1 <- function(x,attrs = FALSE){
-  return(str(x,max.level=1,give.attr=attrs))
+str1 <- function(x,attrs = FALSE,...){
+  return(str(x,max.level=1,give.attr=attrs,...))
 }
 
 #' @title str2 a simple replacement for str(x,max.level=2,give.attr=FALSE)
@@ -932,15 +933,16 @@ str1 <- function(x,attrs = FALSE){
 #'
 #' @param x the object whose structure is to be listed
 #' @param attrs should the objects attributes be printed? default = FALSE
-#'
-#' @return str(x,max.level=2)
+#' @param ... ellipsis allows str arguments to be included, eg vec.len=4
+#' 
+#' @return str(x,max.level=2,attrs=attrs,...)
 #' @export
 #'
 #' @examples
 #' x <- matrix(rnorm(25,mean=5,sd=1),nrow=5,ncol=5)
 #' str2(x)
-str2 <- function(x,attrs=FALSE){
-  return(str(x,max.level=2,give.attr=attrs))
+str2 <- function(x,attrs=FALSE,...){
+  return(str(x,max.level=2,give.attr=attrs,...))
 }
 
 #' @title tidynames can replace awkward data.frame names with better ones

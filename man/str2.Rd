@@ -4,15 +4,17 @@
 \alias{str2}
 \title{str2 a simple replacement for str(x,max.level=2,give.attr=FALSE)}
 \usage{
-str2(x, attrs = FALSE)
+str2(x, attrs = FALSE, ...)
 }
 \arguments{
 \item{x}{the object whose structure is to be listed}
 
 \item{attrs}{should the objects attributes be printed? default = FALSE}
+
+\item{...}{ellipsis allows str arguments to be included, eg vec.len=4}
 }
 \value{
-str(x,max.level=2)
+str(x,max.level=2,attrs=attrs,...)
 }
 \description{
 str2 an abbreviated replacement for str(x,max.level=2), which I
