@@ -54,29 +54,9 @@ dir(indir)
 files <- c("constC.R","constrefperiod.R","plotfuns.R","Tas_specific.R","tashs_funs.R")
 out <- describefunctions(indir=indir,outfile=outfilen,files=files,sortby="file")
 
-#develop includemissingRC-----------------------------------
+#develop makeQuarto-----------------------------------
 
-
-
-
-dat <- matrix(trunc(rnorm(50, mean=20, sd=4)),nrow=10,ncol=5,
-              dimnames=list(c(2,4,6,8,14,16,18,20,24,26),
-                            c("1990","1991","1995","1997","1999")))
-print(dat)
-
-insertmissingRC(dat,incrow=2)
-
-dat <- matrix(trunc(rnorm(50, mean=20, sd=4)),nrow=10,ncol=5,
-              dimnames=list(c(2,4,6,8,14,16,18,20,24,26),
-                            c("1990","1991A","1995","1997","1999")))
-insertmissingRC(dat,incrow=2)
-
-dat <- matrix(trunc(rnorm(50, mean=20, sd=4)),nrow=10,ncol=5,
-              dimnames=list(c(2,4,6,8,10,12,14,16,18,20),
-                            c("1990","1991","1992","1993","1994")))
-print(dat)
-insertmissingRC(dat,incrow=2)
-
+library(codeutils)
 
 
 

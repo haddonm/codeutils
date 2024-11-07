@@ -1,7 +1,7 @@
 Package: codeutils
 Title: Contains a Series of Utility Functions for File Handling and Programming
-Version: 0.0.16
-Date: 2024-08-18
+Version: 0.1.1
+Date: 2024-11-07
 Authors@R: person(given="Malcolm",
                   family="Haddon", 
                   email = "malcolm.haddon@gmail.com", 

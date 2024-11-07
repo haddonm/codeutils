@@ -1,0 +1,77 @@
+--- 
+title:  A Title 
+
+author: 
+  - name:  My Name 
+
+    affiliation: 
+       name:  here 
+
+date: last-modified 
+date-format: '[Updated on] DD MMMM YYYY' 
+page-navigation: true 
+
+format: 
+  docx: 
+    crossref: 
+      chapters: true 
+    highlight-style: github 
+    papersize: A4 
+    code-overflow: 'wrap' 
+    reference-doc:  wordreferencestyle.docx 
+    toc: true 
+    number-sections: true 
+    toc-depth: 3 
+    number-depth: 3 
+    margin-left: 0.75in 
+    margin-right: 0.75in 
+    margin-top: 1in 
+    margin-bottom: 1in 
+  pdf: 
+    documentclass: scrreport 
+    keep-tex: true 
+    dpi: 600 
+    #pdf-engine: pdflatex 
+    toc: true 
+    toc-depth: 3 
+    toc-float: true 
+    number-sections: true 
+    number-depth: 3 
+    crossref: 
+      chapters: true 
+    highlight-style: github 
+    papersize: A4paper 
+    geometry: 
+      - left = 19mm 
+      - right = 19mm 
+      - top = 25mm 
+      - bottom = 25mm 
+  html: 
+    theme: 
+      - cosmo 
+      - custom.scss 
+    code-copy: true 
+
+
+```{r} 
+#| label: setup-main 
+#| echo: false 
+#| warning: false 
+
+knitr:: opt_chunk$set( 
+  echo = FALSE, 
+  message = FALSE, 
+  warning = FALSE) 
+options(knitr.kable.NA = '', 
+        knitr.table.format = 'pandoc') 
+
+options(tinytex.verbose = TRUE) # change to suit 
+
+suppressPackageStartupMessages({ 
+  library(codeutils) 
+  library(hplot) 
+  library(knitr) 
+  library(qmdutils) 
+
+ddir <- getDBdir()  
+``` 
