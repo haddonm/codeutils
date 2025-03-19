@@ -14,10 +14,10 @@ functions, default="", which means all R files in indir will be used}
 
 \item{outfile}{the full path and name of the CSV file to which the results
 should be saved. default="", which means the output will only be
-returned invisibly. If outfile has a fullpath csv filename then it will
-also be written to that file as well as retunred invisibly}
+returned invisibly. If outfile has a full-path csv filename then it will
+also be written to that file as well as returned invisibly}
 
-\item{sortby}{how should the output be sorted? deffault = "functions", which
+\item{sortby}{how should the output be sorted? default = "functions", which
 means the functions will be sorted by name. The alternative is "file",
 which will sort the output by input filename}
 }

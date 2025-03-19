@@ -1144,9 +1144,9 @@ confirmdir <- function(x,make=TRUE,verbose=TRUE,ask=TRUE) {
 #'     functions, default="", which means all R files in indir will be used
 #' @param outfile the full path and name of the CSV file to which the results 
 #'     should be saved. default="", which means the output will only be 
-#'     returned invisibly. If outfile has a fullpath csv filename then it will
-#'     also be written to that file as well as retunred invisibly
-#' @param sortby how should the output be sorted? deffault = "functions", which
+#'     returned invisibly. If outfile has a full-path csv filename then it will
+#'     also be written to that file as well as returned invisibly
+#' @param sortby how should the output be sorted? default = "functions", which
 #'     means the functions will be sorted by name. The alternative is "file",
 #'     which will sort the output by input filename 
 #'     
@@ -1199,15 +1199,23 @@ describefunctions <- function(indir,files="",outfile="",sortby="functions") {
   }
   allfilesort <- allfiles[order(allfiles[,sortby]),]
   allrefs <- matrix(0,nrow=0,ncol=1)
-  for (i in 1:nfiles) {# i = 8
+  for (i in 1:nfiles) {# i = 13
     if (numfuns[i] > 0) {
-       allrefs <- rbind(allrefs,findfuns(indir,files[i],
-                                         allfilesort[,"functions"]))
+      allrefs <- rbind(allrefs,findfuns(indir,files[i],
+                                        allfilesort[,"functions"]))
     } else {
-      allrefs <- rbind(allrefs,", , ")
+      allrefs <- rbind(allrefs,"")
     }
   }
-  allfiles[,"references"] <- allrefs
+  allR <- gsub(", ,","",allrefs[,1])
+  allR <- gsub(" , ","",allR)
+  allR <- gsub(",, ","",allR)
+  pickF <- which(nchar(allR) > 0)
+  for (i in 1:length(pickF)) {
+    indiv <- unique(removeEmpty(unlist(strsplit(allR[pickF[i]],","))))
+    allR[pickF[i]] <- paste0(indiv,collapse=", ")
+  }
+  allfiles[,"references"] <- allR
   x <- allfiles[order(allfiles[,sortby]),]
   x[,"crossreference"] <- ""
   nfun <- nrow(x)
@@ -1218,11 +1226,50 @@ describefunctions <- function(indir,files="",outfile="",sortby="functions") {
     } else {
       x[i,"crossreference"] <- paste0(x[pickf,"functions"],collapse=", ")
     }
+    
   }
   xfinal <- x[,c(1,2,3,4,6,5)]
-  if (nchar(outfile) > 5) write.csv(xfinal,file = outfile)
-  return(invisible(xfinal))
+  pickF <- which((nchar(xfinal[,"references"]) > 0) | 
+                   (nchar(xfinal[,"crossreference"]) > 0)) 
+  xfinalS <- rbind(xfinal[pickF,],xfinal[-pickF,]) 
+  pickE <- which(nchar(xfinalS[,"functions"]) == 0)
+  xfinalS[pickE,"functions"] <- "no-Functions"
+  colnames(xfinalS) <- c("linenumber","Rfile","function","calls","called-by",
+                          "syntax")
+  if (nchar(outfile) > 5) write.csv(xfinalS,file = outfile)
+  return(invisible(xfinalS))
 } # end of describefunctions
+
+#' @title endpart extracts the last part of an R path listing
+#' 
+#' @description endpart takes a path listing and extracts the final part. This
+#'     is used to find the subdirectory name into which an analysis is to be
+#'     placed, or could be used to find only the filename of a file at the end
+#'     of a long path. endpart automatically finds whether the user has '/'
+#'     or '\\\\' as the section separator.
+#'
+#' @param x a character vector of the path to a subdirectory or filename
+#'
+#' @returns the final character string - either a subdirectory or filename
+#' @export
+#'
+#' @examples
+#' first <- "C:/Users/public/Public Documents/first/"
+#' second <- "C:\\Users\\public\\Public Documents\\second"
+#' print(first)
+#' print(second)
+#' endpart(first)
+#' endpart(second)
+endpart <- function(x) {
+  tmp <- unlist(strsplit(x, ""))
+  use1 <- length(which(tmp == "/"))
+  if (use1 > 0) {
+    last <- tail(unlist(strsplit(x,split="/")),1)
+  } else {
+    last <- tail(unlist(strsplit(x,split="\\\\")),1)
+  }
+  return(last)
+} # end of endpart
 
 #' @title extractpathway traces the sequence of functions calls within a function
 #'
@@ -1421,6 +1468,109 @@ getDBdir <- function() {
   return(prefixdir)
 } # end of getDBdir
 
+#' @title getfunmap generates node and edge data to map function relationships
+#' 
+#' @description getfunmap takes in a directory of R files,and optionally a 
+#'     vector of filenames within which to search for functions and any calling
+#'     relationships between them. It generates a 2-column matrix of edges 
+#'     between nodes ready for use by the graph_from_edgelist function from
+#'     igraph. It identifies those functions that call other functions within 
+#'     the same R package, and maps only those. It also identifies those 
+#'     functions that are isolated and are only called from outside the package.
+#'     Mapping all functions inside a larger package can lead to a complex 
+#'     visual mess of a map, hence the option of examining the relationships 
+#'     between a smaller given set of functions is provided with the checkfun
+#'     argument. This is designed so that people may illustrate the design of
+#'     their own R packages but can be used with any collection of R functions.  
+#' 
+#' @param indir the directory containing R files for analysis
+#' @param checkfun a vector of functions whose relationships are to be mapped. 
+#'     If left as the default = '', then all functions are mapped. 
+#' @param sortby How should the functions object produced by describefunctions
+#'     be sorted? Options are 'Rfile', function', 'calls', 'called-by', and 
+#'     even 'syntax' though that would be messy.
+#' @param files default = '', but could be a list of R files to be found in 
+#'     indir that should be analysed, if left at default all R files will be
+#'     used
+#' @param outfile the names of a txtfile (.csv spearated) to store the 
+#'     output from describefunctions, again default = '', no file saved. 
+#' 
+#' @seealso{
+#'     \link{describefunctions}
+#' }
+#'
+#' @returns a list of alledges, function matrix, the checkfun used, all edges,
+#'     and a vector of the names of any isolated functions 
+#' @export
+#'
+#' @examples
+#' print("wait on suitable example data")
+#' # indir=rundir; checkfun=checkvar;sortby="function";files="";outfile=""
+getfunmap <- function(indir,checkfun="",sortby="function",files="",
+                      outfile="") {
+  funs <- describefunctions(indir=indir,files=files,outfile=outfile)
+  pickE <- which((nchar(funs[,"calls"]) > 0))
+  pickC <- which((nchar(funs[,"calls"]) > 0) &
+                   (nchar(funs[,"called-by"]) > 0))
+  pickI <- which((nchar(funs[,"calls"]) == 0))
+  workfun <- funs[pickE,]
+  isolates <- funs[pickI,]
+  isolates <- isolates[order(isolates[,"function"]),]
+  numfuns <- length(pickE)
+  if (length(checkfun)== 1) {
+     if ((checkfun %in% isolates[,"function"]) == TRUE) {
+       msg <- " does't call another function, mapping pointless \n" 
+       stop(cat(checkfun,msg))
+       return(NULL)
+     }
+  }
+  dat <- NULL  # find functions called by each function
+  for(i in 1:numfuns) { # i = 2
+    fun <- workfun[i,"function"]
+    calls  <- unlist(strsplit(workfun[i,"calls"],", "))
+    ncall <- length(calls)
+    for (j in 1:ncall) dat <- c(dat,fun,calls[j])
+  }
+  edg <- matrix(dat,ncol=2,byrow=TRUE)
+  if (length(checkfun) > 0) {
+    pickF <- which(edg[,1] %in% checkfun)
+    numrow <- length(pickF)
+    alledg <- as.data.frame(matrix(0,nrow=numrow,ncol=2))
+    alledg[c(1:numrow),] <- as.matrix(edg[pickF,])
+    firstedg <- alledg
+    pickf2 <- which(edg[,2] %in% checkfun) 
+    npickf2 <- length(pickf2)
+    if (npickf2 > 0) {
+      if (length(pickf2) == 1) {
+        secondedg <- as.data.frame(matrix(0,nrow=1,ncol=2))
+        secondedg[1,] <- edg[pickf2,]
+      } else {
+        secondedg <- edg[pickf2,]
+      }
+     } else {
+      secondedg <- NULL
+    }
+    if (length(pickf2) > 0) alledg <- rbind(alledg,secondedg)
+    # remove duplicates
+    check2nd <- which(secondedg[,1] %in% checkfun)
+    numrow <- length(check2nd)
+    elim <- NULL
+    for (i in 1:numrow) { #  i = 1
+      whchF <- secondedg[check2nd[i]]
+      look <- which(firstedg[,1] == whchF)
+      duplic <- which(firstedg[look,2] == secondedg[check2nd[i],2]) 
+      if (length(duplic) > 0) elim <- c(elim,check2nd[i])
+    }
+    if (length(elim) > 0) {
+      secondedg <- secondedg[-elim,]
+      alledg <- rbind(firstedg,secondedg)
+    }
+  } else {
+    alledg <- edg
+  }
+  return(invisible(list(alledge=alledg,functions=funs,checkfun=checkfun,
+                        edg=edg,isolates=isolates)))
+} # end of getfunmap
 
 #' @title getname returns the name of a variable as character
 #'

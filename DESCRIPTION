@@ -1,7 +1,7 @@
 Package: codeutils
 Title: Contains a Series of Utility Functions for File Handling and Programming
-Version: 0.1.1
-Date: 2024-11-07
+Version: 0.1.3
+Date: 2025-03-19
 Authors@R: person(given="Malcolm",
                   family="Haddon", 
                   email = "malcolm.haddon@gmail.com", 
@@ -10,7 +10,8 @@ Authors@R: person(given="Malcolm",
 Maintainer: <malcolm.haddon@gmail.com>
 Description: Contains a Series of Utility Functions for File Handling, 
     Programming, etc. Contains codeutilities, programming utilities, utils for
-    Rmd files, and for diagrams.
+    Rmd files, and for diagrams, including the mapping of relationships 
+    between functions within anR package.
 License: GPL-3
 Imports: 
     knitr
