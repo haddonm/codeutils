@@ -55,10 +55,13 @@ funs[pickESS,3:4]
   
   
   
-  
-  
-  
-  
+g1 <- graph_from_literal(writectrlfile -+ writedatafile -+ initiatemodel -+
+                         equilibrium) 
+ 
+library(hplot)
+plotprep(width=6, height=5) 
+parset(cex=1.25)  
+plot(g1)  
   
   
   

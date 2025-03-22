@@ -2300,3 +2300,54 @@ setuprmd <- function(filen="") {
 `%ni%` <- function(x,y) {
   !(x %in% y)
 }
+
+
+#' @title writepackagedesc adds a packages R file to the R directory
+#' 
+#' @description writepackagedesc is only used when creating a new package from 
+#'     GitHub, as described in ALSimGuide. It must be used when the working
+#'     directory (as in getwd()) is the base directory of the incipient 
+#'     package. Either this functions two arguments are filled or there needs 
+#'     to be a basic readme.md file created by GitHub from teh package name and
+#'     the brief description given inside GitHub when creating the repository.
+#'
+#' @param packname a character vector of the package's name, default = ''
+#' @param packdesc a brief description of what the package does, default = ''
+#'
+#' @returns nothing but it does write a function into the R directory, creating
+#'     the directory if it does not already exist.
+#' @export
+#'
+#' @examples
+#' # syntax = writepackagedesc(packname="ALSim",packdesc="")
+writepackagedesc <- function(packname="",packdesc="") {
+  wd <- getwd()
+  confirmdir("R",ask=FALSE,verbose=FALSE)  
+  if (nchar(packname) == 0) packname <- endpart(wd)
+  if ((nchar(packdesc) == 0) & (file.exists("readme.md"))) {
+    packdesc <- readLines(con="readme.md")[2]
+  } else {
+    txt <- paste0("writepackagedesc requires either an explicit packdesc ",
+                  "or a readme.md with a package description in the second ",
+                  "line. \n\n")
+    stop(cat(txt))
+  }
+  Rdir <- pathtopath(wd,"R/")
+  filename <- paste0(packname,".R")
+  filen <- pathtopath(Rdir,filename)
+  cat("\n",file=filen,append=FALSE)
+  cat("#' @importFrom graphics plot \n",file=filen,append=TRUE)
+  cat("#' @importFrom stats rlnorm rnorm \n",file=filen,append=TRUE)
+  cat("NULL \n",file=filen,append=TRUE)
+  cat("\n\n\n",file=filen,append=TRUE)
+  cat("#' @title ",packname," ",packdesc,"\n",file=filen,append=TRUE)
+  cat("#' \n",file=filen,append=TRUE)
+  cat("#' @description ",packdesc,"\n",file=filen,append=TRUE)
+  cat("#' \n",file=filen,append=TRUE)  
+  cat("#' @docType package \n",file=filen,append=TRUE)  
+  cat("#' @name ALpop \n",file=filen,append=TRUE) 
+  cat("#' @keywords internal  \n",file=filen,append=TRUE) 
+  cat('"_PACKAGE" \n',file=filen,append=TRUE) 
+  cat("NULL \n",file=filen,append=TRUE) 
+} # end of writeopackagedesc
+
