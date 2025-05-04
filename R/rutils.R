@@ -290,6 +290,36 @@ geomean <- function(invect=NULL) {
   return(gmean)
 }  # end of geomean
 
+#' @title getConst extracts 'nb' numbers from a line of text
+#'
+#' @description getConst parses a line of text and extracts 'nb' pieces of
+#'     text as numbers
+#'
+#' @param inline text line to be parsed, usually obtained using readLines
+#' @param nb the number of numbers to extract
+#' @param index which non-empty object to begin extracting from?
+#'
+#' @return a vector of length 'nb'
+#' @export
+#'
+#' @examples
+#'   txtline <- "MaxDL , 32,32,32"
+#'   getConst(txtline,nb=3,index=2)
+getConst <- function(inline,nb,index=2) { # parses lines containing numbers
+  #  inline=indat[c(from+1)];nb=2;index=2
+  ans <- numeric(nb)
+  tmp <- removeEmpty(unlist(strsplit(inline,",")))
+  if (length(tmp) < (nb+(index-1)))
+    warning(paste("possible problem with data",tmp[1],
+                  "missing comma?",sep=" "),"\n")
+  count <- 0
+  for (j in index:(nb+index-1)) {
+    count <- count + 1
+    ans[count] <- as.numeric(tmp[j])
+  }
+  return(ans)
+}   # end getConst
+
 #' @title getmin generates the lower bound for a plot
 #'
 #' @description getmin generates lower bound for a plot where it is unknown
@@ -390,6 +420,35 @@ getseed <- function() {
   newseed <- as.numeric(newseed)
   return(newseed)
 } # end of getseed
+
+#' @title getsingleNum find a line of text and extracts a single number
+#'
+#' @description getsingleNum uses grep to find an input line. If the variable
+#'     being searched for fails then NULL is returned. It is assumed that the 
+#'     datafile has been read in using readLines. 
+#'
+#' @param varname the name of the variable to get from intxt
+#' @param intxt text to be parsed, usually obtained using readLines
+#'
+#' @return a single number or, if no value is in the data file a NULL
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#'  txtlines <- c("replicates, 100","Some_other_text, 52")
+#'  getsingleNum("replicates",txtlines)
+#'  getsingleNum("eeplicates",txtlines)
+#'  getsingleNum("other",txtlines)
+#' }
+getsingleNum <- function(varname,intxt) {
+  begin <- grep(varname,intxt)
+  if (length(begin) > 0) {
+    return(as.numeric(getConst(intxt[begin],nb=1,index=2)))
+  } else {
+    return(NULL)
+  }
+} # end of getsinglenum
+
 
 #' @title gettime calculates time in seconds passed each day
 #' 
