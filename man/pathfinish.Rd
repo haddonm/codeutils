@@ -20,4 +20,6 @@ character
 \examples{
   indir <- "C:/Users/Malcolm/Dropbox/rcode2/aMSE/data-raw"
   pathfinish(indir)
+  indir <- "C:\\\\Users\\\\Malcolm\\\\Dropbox\\\\A_codeR\\\\aMSE\\\\data-raw"
+  pathfinish(indir)
 }
