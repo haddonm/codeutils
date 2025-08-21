@@ -23,4 +23,6 @@ text as numbers
 \examples{
   txtline <- "MaxDL , 32,32,32"
   getConst(txtline,nb=3,index=2)
+  txtline <- "bysau, 1, properties by SAU"
+  getConst(txtline,nb=1,index=2)
 }

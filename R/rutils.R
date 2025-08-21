@@ -305,17 +305,22 @@ geomean <- function(invect=NULL) {
 #' @examples
 #'   txtline <- "MaxDL , 32,32,32"
 #'   getConst(txtline,nb=3,index=2)
+#'   txtline <- "bysau, 1, properties by SAU"
+#'   getConst(txtline,nb=1,index=2)
 getConst <- function(inline,nb,index=2) { # parses lines containing numbers
   #  inline=indat[c(from+1)];nb=2;index=2
   ans <- numeric(nb)
   tmp <- removeEmpty(unlist(strsplit(inline,",")))
-  if (length(tmp) < (nb+(index-1)))
-    warning(paste("possible problem with data",tmp[1],
-                  "missing comma?",sep=" "),"\n")
-  count <- 0
-  for (j in index:(nb+index-1)) {
-    count <- count + 1
-    ans[count] <- as.numeric(tmp[j])
+  if (length(tmp) == 0) {
+    ans <- rep(0,nb)
+  } else {
+    if ((length(tmp)- index + 1) < nb) 
+      warning(paste("Not enough data for ",tmp[1],"\n"))
+    count <- 0
+    for (j in index:(nb+index-1)) {
+      count <- count + 1
+      ans[count] <- as.numeric(tmp[j])
+    }
   }
   return(ans)
 }   # end getConst
@@ -1807,14 +1812,13 @@ pathkind <- function(inpath) {
 #' @examples
 #'   indir <- "C:/Users/Malcolm/Dropbox/rcode2/aMSE/data-raw"
 #'   pathfinish(indir)
+#'   indir <- "C:\\Users\\Malcolm\\Dropbox\\A_codeR\\aMSE\\data-raw"
+#'   pathfinish(indir)
 pathfinish <- function(inpath) {
-  lookfor <- pathkind(inpath)
   endpath <- ""
-  if (lookfor == "/") {
-    if(length(grep("/$",inpath)) > 0) endpath <- "/"
-  } else {
-    if(length(grep("\\\\$",inpath)) > 0) endpath <- "\\"
-  }
+  n <- nchar(inpath)
+  if (substr(inpath,n,n) == "/") endpath <- "/"
+  if (substr(inpath,n,n) == "\\") endpath <- "\\"
   return(endpath)
 } # end of pathfinish
 
@@ -1833,13 +1837,9 @@ pathfinish <- function(inpath) {
 #'   indir <- "C:/Users/Malcolm/Dropbox/rcode2/aMSE/data-raw"
 #'   pathstart(indir)
 pathstart <- function(inpath) {  # path2="A_CodeUse/aMSEDoc/figures/install_tar.gz_file.png"
-  lookfor <- pathkind(inpath)
   startpath <- ""
-  if (lookfor == "/") {
-    if(length(grep("^/",inpath)) > 0) startpath <- "/"
-  } else {
-    if(length(grep("^\\\\",inpath)) > 0) startpath <- "\\"
-  }
+  if (substr(inpath,1,1) == "/") startpath <- "/"
+  if (substr(inpath,1,1) == "\\") startpath <- "\\"
   return(startpath)
 } # end of pathstart
 
