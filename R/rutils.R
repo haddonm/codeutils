@@ -601,6 +601,31 @@ insertmissingRC <- function(x,inccol=1,incrow=1) { # x=dat
   return(expandx)
 } # end of insertmissingRC
 
+#' @title incol is a utility to determine if a column is present in a matrix
+#'
+#' @description incol is a utility to determine whether a named column is
+#'     present in a given matrix or data.frame. Is case sensitive! Originally
+#'     developed within MQMF
+#'
+#' @param incol the name of the column; defaults to "year" as an example
+#' @param inmat the matrix or data.frame within which to search for incol
+#'
+#' @return TRUE or FALSE
+#' @export
+#'
+#' @examples
+#' x <- 1:10
+#' test <- matrix(x,nrow=5,ncol=2,dimnames=list(1:5,c("year","Catch")))
+#' print(test)
+#' iscol("year",test)
+#' iscol("Catch",test)
+#' iscol("catch",test)
+#' iscol("ages",test)
+iscol <- function(incol="year",inmat) {
+  if (length(grep(incol,colnames(inmat))) < 1) return(FALSE)
+  else return(TRUE)
+}  # end of iscol
+
 #' @title makelabel generates a label from text and values
 #'
 #' @description makelabel It is common to want a label with text and a series 
