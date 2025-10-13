@@ -1039,9 +1039,6 @@ rowfreqboot <- function(x,n,randsd=0) {  # x =x; n = 200
   if (!is.numeric(randsd) || randsd < 0 ) {
     stop("Input randsd must be zero or a positive value")
   }
-  if (any(x < 0)) {
-    stop("All values in x must be non-negative")
-  }
   out <- matrix(0,nrow(x),ncol(x),dimnames=dimnames(x))
   values <- as.numeric(colnames(x))
   vlength <- length(values)
