@@ -1006,11 +1006,14 @@ revsum <- function(x) {
 #'     as the column headings (ages, sizes) and the rows to the separate sample
 #'     counts of the different column categories. It will then generate a matrix
 #'     of the same dimension as that input that contains an empirical bootstrap
-#'     sample of size n for each row
+#'     sample of size n for each row. Alternatively, by giving randsd a 
+#'     value > 0 each sample will be somewhat different see below.
 #'
 #' @param x a matrix or data.frame of sample counts of a set of integer 
 #'     categories, such as ages or sizes, that are used as column headings.
 #' @param n the bootstrap sample size for each row
+#' @param randsd if == 0, the default, then all bootstrap samples will be of 
+#'     size n. if > 0 then each sample will be of rnorm(1,mean=n,sd=randsd)
 #'
 #' @returns a matrix the same dimensions as x containing a bootstrap sample of x
 #' @export
@@ -1019,14 +1022,22 @@ revsum <- function(x) {
 #' dat <- c(400,1000,600,200,300,50,10,20,5,2,1000,236,556,304,91,125,19,4,7,2,
 #'           700,595,135,297,151,43,55,8,2,3)
 #' inmat <- matrix(dat, nrow=3,ncol=10,byrow=TRUE,dimnames=list(c(1:3),c(4:13)))
-#' rowfreqboot(x=inmat,n=200)
-#' rowfreqboot(x=inmat,n=200)
-rowfreqboot <- function(x,n) {  # x =x; n = 200
+#' tmp <- rowfreqboot(x=inmat,n=200)
+#' tmp
+#' rowSums(tmp)
+#' tmp <- rowfreqboot(x=inmat,n=200,randsd=20)
+#' tmp
+#' rowSums(tmp)
+rowfreqboot <- function(x,n,randsd=0) {  # x =x; n = 200
+  orign <- n
   if (!is.matrix(x) && !is.data.frame(x)) {
     stop("Input x must be a matrix or data.frame")
   }
   if (!is.numeric(n) || n <= 0 || n != as.integer(n)) {
     stop("Input n must be a positive integer")
+  }
+  if (!is.numeric(randsd) || randsd < 0 ) {
+    stop("Input randsd must be zero or a positive value")
   }
   if (any(x < 0)) {
     stop("All values in x must be non-negative")
@@ -1040,6 +1051,7 @@ rowfreqboot <- function(x,n) {  # x =x; n = 200
     if (totrow < n) 
       warning(cat("In rowfreqboot, row ",i," contains < ",n," observations \n"))
     if (sum(x[i,],na.rm=TRUE) > 0) {
+      if (randsd > 0) n <- trunc(rnorm(1,mean=orign,sd=randsd))
       vect <- rep(values,times=x[i,])
       tmp <- table(sample(vect,n,replace=TRUE))
       pick <- match(as.numeric(names(tmp)),values)
@@ -1050,7 +1062,6 @@ rowfreqboot <- function(x,n) {  # x =x; n = 200
   }
   return(out)
 } # end of rowfreqboot
-
 
 #' @title str1 a simple replacement for str(x,max.level=1,give.attr=FALSE)
 #' 

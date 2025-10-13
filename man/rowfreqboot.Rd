@@ -4,13 +4,16 @@
 \alias{rowfreqboot}
 \title{rowfreqboot generates a bootstrap sample of a matrix of counts}
 \usage{
-rowfreqboot(x, n)
+rowfreqboot(x, n, randsd = 0)
 }
 \arguments{
 \item{x}{a matrix or data.frame of sample counts of a set of integer
 categories, such as ages or sizes, that are used as column headings.}
 
 \item{n}{the bootstrap sample size for each row}
+
+\item{randsd}{if == 0, the default, then all bootstrap samples will be of
+size n. if > 0 then each sample will be of rnorm(1,mean=n,sd=randsd)}
 }
 \value{
 a matrix the same dimensions as x containing a bootstrap sample of x
@@ -24,12 +27,17 @@ variability. rowfreqboot expects the integer numeric values to be used
 as the column headings (ages, sizes) and the rows to the separate sample
 counts of the different column categories. It will then generate a matrix
 of the same dimension as that input that contains an empirical bootstrap
-sample of size n for each row
+sample of size n for each row. Alternatively, by giving randsd a
+value > 0 each sample will be somewhat different see below.
 }
 \examples{
 dat <- c(400,1000,600,200,300,50,10,20,5,2,1000,236,556,304,91,125,19,4,7,2,
           700,595,135,297,151,43,55,8,2,3)
 inmat <- matrix(dat, nrow=3,ncol=10,byrow=TRUE,dimnames=list(c(1:3),c(4:13)))
-rowfreqboot(x=inmat,n=200)
-rowfreqboot(x=inmat,n=200)
+tmp <- rowfreqboot(x=inmat,n=200)
+tmp
+rowSums(tmp)
+tmp <- rowfreqboot(x=inmat,n=200,randsd=20)
+tmp
+rowSums(tmp)
 }
