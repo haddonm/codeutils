@@ -1855,6 +1855,44 @@ pathfinish <- function(inpath) {
   return(endpath)
 } # end of pathfinish
 
+#' @title pathfromcopy converts a path copied in Windows into an R path
+#' 
+#' @description pathfromcopy it is very common to want to convert a path copied
+#'     from the file explorer in Windows into an R path. This function uses the
+#'     utils functions ,Platform$OS.type and readClipboard tomake this an
+#'     automatic process. Its about time I did this!
+#'
+#' @returns a path converted to have forward slashes rather than paired 
+#'     or single backslashs.
+#' @export
+#'
+#' @examples
+#' # copy any path from the File explorer in Windows, then use:
+#' # pathfromcopy()    # it will read the clipboard and do the conversion.
+pathfromcopy <- function() {
+  if (!interactive()) {
+    stop("This function only works in interactive sessions")
+  }
+  # Try to read from clipboard
+  path <- tryCatch({
+    if (.Platform$OS.type == "windows") {
+      readClipboard()
+    } else {
+      stop("Currently this only workson Windows machines")
+    }
+  }, error = function(e) {
+    stop("Could not read from clipboard: ", e$message)
+  })
+  if (length(path) == 0 || all(path == "")) {
+    stop("Clipboard is empty")
+  }
+  # If multiple lines, use the first one
+  if (length(path) > 1) path <- path[1]
+  # Convert the path
+  newpath <- gsub("\\\\","/",path)
+  return(newpath)
+} # end of pathfromcopy
+
 #' @title pathstart determines what character(s) is at the start of a path
 #'
 #' @description pathstart determines what character(s) is at the start of a
