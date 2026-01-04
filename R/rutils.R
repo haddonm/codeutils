@@ -1043,20 +1043,22 @@ rowfreqboot <- function(x,n,randsd=0) {  # x =x; n = 200
   values <- as.numeric(colnames(x))
   vlength <- length(values)
   nr <- nrow(x)
+  zerorows <- 0
   for (i in 1:nr) {  #  i = 1
     totrow <- sum(x[i,],na.rm=TRUE)
-    if (totrow < n) 
-      warning(cat("In rowfreqboot, row ",i," contains < ",n," observations \n"))
-    if (sum(x[i,],na.rm=TRUE) > 0) {
+    if (totrow == 0) {
+      zerorows <- zerorows + 1
+      out[i,] <- rep(0,vlength)      
+    } else {
+      if (totrow < n) 
+        warning(cat("In rowfreqboot, row ",i," has < ",n," observations \n"))
       if (randsd > 0) n <- trunc(rnorm(1,mean=orign,sd=randsd))
       vect <- rep(values,times=x[i,])
       tmp <- table(sample(vect,n,replace=TRUE))
       pick <- match(as.numeric(names(tmp)),values)
       out[i,pick] <- tmp
-    } else {
-      out[i,] <- rep(0,vlength)
-    }
-  }
+    } # end of else and overall if
+  }   # end of for loop
   return(out)
 } # end of rowfreqboot
 
