@@ -454,6 +454,28 @@ getsingleNum <- function(varname,intxt) {
   }
 } # end of getsinglenum
 
+#' @title getStr obtains a string from an input text line
+#' 
+#' @description  getStr obtains a string from an input text line, omitting the
+#'     initial line label. The character to split the line on can be varied 
+#'     from the default of ','. In the strsplit function the 'fixed' option is 
+#'     set TRUE so the split will match the sep character exactly.
+#'
+#' @param inline input text line 
+#' @param sep what is used to separate character strings? default = ',', comma
+#'
+#' @return a vector of character strings
+#' @export
+#'
+#' @examples
+#' txt=c("fleets","trwl","Auln")
+#' getStr(txt)
+getStr <- function(inline,sep=",") {
+  tmp <- unlist(strsplit(inline,split=sep,fixed = TRUE))
+  tmp <- removeEmpty(tmp)
+  outconst <- as.character(tmp[2:(length(tmp))])
+  return(outconst)
+} # end of getStr
 
 #' @title gettime calculates time in seconds passed each day
 #' 
@@ -625,6 +647,39 @@ iscol <- function(incol="year",inmat) {
   if (length(grep(incol,colnames(inmat))) < 1) return(FALSE)
   else return(TRUE)
 }  # end of iscol
+
+#' @title limitstr temporarily constrains the width of the output from str
+#' 
+#' @description limitstr can be used when using Quarto or Rmarkdown to limit
+#'     the width of the output text from str or str1 so it fits nicely on an A4
+#'     page
+#'
+#' @param x the object whose structure is to printed
+#' @param width what width in characters should be used, default= 72
+#' @param str1 should the str1 function be used, which sets max.level=1 and 
+#'     strips out all the attribute information. default=TRUE
+#'
+#' @returns nothing but it does run str or str1 while leaving the str options
+#'     static
+#' @export
+#'
+#' @examples
+#' mat <- matrix(data=rnorm(25,mean=20,sd=2),ncol=5,nrow=5,
+#'               dimnames=list(1:5,1:5))
+#' obj <- list(a=mat,b=mat,c=mat)
+#' str(obj)
+#' limitstr(obj,width=40,str1=TRUE)
+#' limitstr(obj,width=40,str1=FALSE)
+limitstr <- function(x,width=72,str1=TRUE) { # x=stock; width=70
+  tmp <- options(width = width,
+                 str = strOptions(strict.width="cut"))
+  if (str1) {
+    str1(x)
+  } else {
+    str(x)
+  }
+  options(tmp)
+} # end of limitstr
 
 #' @title makelabel generates a label from text and values
 #'

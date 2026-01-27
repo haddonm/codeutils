@@ -45,6 +45,7 @@ NULL
 #' @importFrom graphics par grid plot axis mtext polygon title hist lines text
 #' @importFrom graphics points
 #' @importFrom utils tail head str write.table write.csv readClipboard
+#' @importFrom utils strOptions
 #' @importFrom stats quantile loess sd rnorm
 #' @importFrom knitr kable
 NULL

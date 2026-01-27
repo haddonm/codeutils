@@ -42,7 +42,7 @@ for (i in 1:nC) {# i = 5
   
   
 }
-pickMany <- which(counts > 4)
+pickMany <- which(counts > 0)
 funs[pickMany,"function"]  
   
   
