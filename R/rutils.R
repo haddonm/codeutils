@@ -348,7 +348,7 @@ getConst <- function(inline,nb,index=2) { # parses lines containing numbers
 #'  vect <- c(vect,-Inf)
 #'  getmin(vect)
 getmin <- function(x,mult=1.05) {
-  if (any(x == -Inf)) {
+  if (any(x == -Inf, na.rm=TRUE)) {
     warning("-Inf found in input to getmin; removed from estimate")
     pick <- which(x == -Inf) 
     x <- x[-pick]
@@ -386,7 +386,7 @@ getmin <- function(x,mult=1.05) {
 #'  vect <- c(vect,Inf)
 #'  getmax(vect)
 getmax <- function(x,mult=1.05) { # x=x;mult=1.05
-  if (any(x == Inf)) {
+  if (any(x == Inf, na.rm=TRUE)) {
     warning("Inf found in input to getmax; removed from estimate")
     pick <- which(x == Inf) 
     x <- x[-pick]
