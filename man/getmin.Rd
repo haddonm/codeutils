@@ -22,9 +22,9 @@ if > 0 then the multiplier needs to be adjusted appropriately so
 the minimum is slightly lower than the minimum of the data
 }
 \examples{
-\dontrun{
 vect <- rnorm(10,mean=0,sd=2)
 sort(vect)
 getmin(vect,mult=1.0)
-}
+ vect <- c(vect,Inf)
+ getmax(vect)
 }

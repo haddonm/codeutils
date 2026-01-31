@@ -340,12 +340,22 @@ getConst <- function(inline,nb,index=2) { # parses lines containing numbers
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #' vect <- rnorm(10,mean=0,sd=2)
 #' sort(vect)
 #' getmin(vect,mult=1.0)
-#' }
+#'  vect <- c(vect,Inf)
+#'  getmax(vect)
 getmin <- function(x,mult=1.05) {
+  if (any(x == Inf)) {
+    warning("Inf found in input to getmin; removed from estimate")
+    pick <- which(x == Inf) 
+    x <- x[-pick]
+  }
+  if (any(x == -Inf)) {
+    warning("-Inf found in input to getmin; removed from estimate")
+    pick <- which(x == -Inf) 
+    x <- x[-pick]
+  }
   ymin <- min(x,na.rm=TRUE)
   if (ymin < 0) {
     ymin <- ymin * mult
@@ -370,15 +380,20 @@ getmin <- function(x,mult=1.05) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #'  vect <- rnorm(10,mean=0,sd=2)
 #'  sort(vect,decreasing=TRUE)
 #'  getmax(vect,mult=1.0)
 #'  vect <- rnorm(10,mean = -5,sd = 1.5)
 #'  sort(vect,decreasing=TRUE)
 #'  getmax(vect,mult=1.0)
-#' }
-getmax <- function(x,mult=1.05) {
+#'  vect <- c(vect,Inf)
+#'  getmax(vect)
+getmax <- function(x,mult=1.05) { # x=x;mult=1.05
+  if (any(x == Inf)) {
+    warning("Inf found in input to getmax; removed from estimate")
+    pick <- which(x == Inf) 
+    x <- x[-pick]
+  }
   ymax <- max(x,na.rm=TRUE)
   if (ymax > 0) {
     ymax <- ymax * mult
