@@ -26,5 +26,7 @@ vect <- rnorm(10,mean=0,sd=2)
 sort(vect)
 getmin(vect,mult=1.0)
  vect <- c(vect,Inf)
- getmax(vect)
+ getmin(vect)
+ vect <- c(vect,-Inf)
+ getmin(vect)
 }

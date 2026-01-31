@@ -344,13 +344,10 @@ getConst <- function(inline,nb,index=2) { # parses lines containing numbers
 #' sort(vect)
 #' getmin(vect,mult=1.0)
 #'  vect <- c(vect,Inf)
-#'  getmax(vect)
+#'  getmin(vect)
+#'  vect <- c(vect,-Inf)
+#'  getmin(vect)
 getmin <- function(x,mult=1.05) {
-  if (any(x == Inf)) {
-    warning("Inf found in input to getmin; removed from estimate")
-    pick <- which(x == Inf) 
-    x <- x[-pick]
-  }
   if (any(x == -Inf)) {
     warning("-Inf found in input to getmin; removed from estimate")
     pick <- which(x == -Inf) 
