@@ -4,7 +4,7 @@
 \alias{getConst}
 \title{getConst extracts 'nb' numbers from a line of text}
 \usage{
-getConst(inline, nb, index = 2)
+getConst(inline, nb, index = 2, split = ",")
 }
 \arguments{
 \item{inline}{text line to be parsed, usually obtained using readLines}
@@ -12,6 +12,8 @@ getConst(inline, nb, index = 2)
 \item{nb}{the number of numbers to extract}
 
 \item{index}{which non-empty object to begin extracting from?}
+
+\item{split}{what split text to use when parsing the line, default = ','}
 }
 \value{
 a vector of length 'nb'
@@ -25,4 +27,6 @@ text as numbers
   getConst(txtline,nb=3,index=2)
   txtline <- "bysau, 1, properties by SAU"
   getConst(txtline,nb=1,index=2)
+  txtline <- "Dead_Catch_MSY 588.1"
+  getConst(txtline,nb=1,index=2,split=" ")
 }

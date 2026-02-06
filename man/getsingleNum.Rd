@@ -4,12 +4,14 @@
 \alias{getsingleNum}
 \title{getsingleNum find a line of text and extracts a single number}
 \usage{
-getsingleNum(varname, intxt)
+getsingleNum(varname, intxt, split = ",")
 }
 \arguments{
 \item{varname}{the name of the variable to get from intxt}
 
 \item{intxt}{text to be parsed, usually obtained using readLines}
+
+\item{split}{what split text to use when parsing the line, default = ','}
 }
 \value{
 a single number or, if no value is in the data file a NULL
@@ -25,5 +27,7 @@ datafile has been read in using readLines.
  getsingleNum("replicates",txtlines)
  getsingleNum("eeplicates",txtlines)
  getsingleNum("other",txtlines)
+ txtlines <- "Dead_Catch_MSY 588.1 Another 100"
+ getsingleNum("Dead_Catch_MSY",txtlines,split=" ")
 }
 }

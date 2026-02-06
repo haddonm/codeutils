@@ -298,6 +298,7 @@ geomean <- function(invect=NULL) {
 #' @param inline text line to be parsed, usually obtained using readLines
 #' @param nb the number of numbers to extract
 #' @param index which non-empty object to begin extracting from?
+#' @param split what split text to use when parsing the line, default = ','
 #'
 #' @return a vector of length 'nb'
 #' @export
@@ -307,10 +308,12 @@ geomean <- function(invect=NULL) {
 #'   getConst(txtline,nb=3,index=2)
 #'   txtline <- "bysau, 1, properties by SAU"
 #'   getConst(txtline,nb=1,index=2)
-getConst <- function(inline,nb,index=2) { # parses lines containing numbers
+#'   txtline <- "Dead_Catch_MSY 588.1"
+#'   getConst(txtline,nb=1,index=2,split=" ")
+getConst <- function(inline,nb,index=2,split=",") { # parses lines containing numbers
   #  inline=indat[c(from+1)];nb=2;index=2
   ans <- numeric(nb)
-  tmp <- removeEmpty(unlist(strsplit(inline,",")))
+  tmp <- removeEmpty(unlist(strsplit(inline,split=split,fixed=TRUE)))
   if (length(tmp) == 0) {
     ans <- rep(0,nb)
   } else {
@@ -446,6 +449,7 @@ getseed <- function() {
 #'
 #' @param varname the name of the variable to get from intxt
 #' @param intxt text to be parsed, usually obtained using readLines
+#' @param split what split text to use when parsing the line, default = ','
 #'
 #' @return a single number or, if no value is in the data file a NULL
 #' @export
@@ -456,11 +460,13 @@ getseed <- function() {
 #'  getsingleNum("replicates",txtlines)
 #'  getsingleNum("eeplicates",txtlines)
 #'  getsingleNum("other",txtlines)
+#'  txtlines <- "Dead_Catch_MSY 588.1 Another 100"
+#'  getsingleNum("Dead_Catch_MSY",txtlines,split=" ")
 #' }
-getsingleNum <- function(varname,intxt) {
+getsingleNum <- function(varname,intxt,split=",") {
   begin <- grep(varname,intxt)
   if (length(begin) > 0) {
-    return(as.numeric(getConst(intxt[begin],nb=1,index=2)))
+    return(as.numeric(getConst(intxt[begin],nb=1,index=2,split=split)))
   } else {
     return(NULL)
   }
