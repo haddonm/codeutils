@@ -105,6 +105,30 @@ countgtOne <- function(invect) {
   return(length(pick1)/length(invect))
 }
 
+#' @title detibble if the input is a tibble it converts it back to a data.frame
+#' 
+#' @description detibble is used to ensure that if an input object is a tibble
+#'     then it is returned as a base R data.frame. This is sometimes needed as
+#'     tibbles can upset some base R functionality.
+#'
+#' @param indat any matrix like data.frame or tibble
+#'
+#' @return a data.frame
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # syntax
+#' detibble(tibble)
+#' }
+detibble <- function(indat) {
+  if ("tbl" %in% class(indat)) {
+    indat <- as.data.frame(unclass(indat), stringsAsFactors = FALSE,
+                           check.names=FALSE)
+  } 
+  return(indat)
+} # end of detibble
+
 #' @title expandcolumns inserts missing matrix columns where colnames are numbers
 #' 
 #' @description expandcolumns takes in a matrix that has column names that are 
@@ -1209,50 +1233,27 @@ tidynames <- function(columns,replace,repwith) {
   return(columns)
 } # end of tidynames
 
-#' @title toXL copies a data.frame or matrix to the clipboard
+#' @title toXL a notice deprecating the function
 #'
-#' @description toXL copies a data.frame or matrix to the clipboard
-#'    so one can then switch to Excel and just type ctrl + V to paste the
-#'    data in place
+#' @description toXL was causing issues for MacOS machines, so I have put the 
+#'      original function into the source file 'systemcall_source.R' in the 
+#'      data-raw subdirectory of the package.
 #'
-#' @param x a vector or matrix
-#' @param output - a boolean determining whether to print the object to the
-#'    screen as well as the clipboard; defaults to FALSE
-#' @return Places the object 'x' into the clipboard ready for pasting
-#' @export toXL
-#' @examples
-#' datamatrix <- matrix(data=rnorm(100),nrow=10,ncol=10)
-#' colnames(datamatrix) <- paste0("A",1:10)
-#' rownames(datamatrix) <- paste0("B",1:10)
-#' toXL(datamatrix,output=TRUE)
-toXL <- function(x,output=FALSE) {
-  write.table(x,"clipboard",sep="\t")
-  if(output) print(x)
-}
-
-#' @title detibble if the input is a tibble it converts it back to a data.frame
-#' 
-#' @description detibble is used to ensure that if an input object is a tibble
-#'     then it is returned as a base R data.frame. This is sometimes needed as
-#'     tibbles can upset some base R functionality.
+#' @param x a dummy variable
 #'
-#' @param indat any matrix like data.frame or tibble
-#'
-#' @return a data.frame
+#' @returns a message descripbing where toXL can now be found
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' # syntax
-#' detibble(tibble)
-#' }
-detibble <- function(indat) {
-  if ("tbl" %in% class(indat)) {
-    indat <- as.data.frame(unclass(indat), stringsAsFactors = FALSE,
-                           check.names=FALSE)
-  } 
-  return(indat)
-} # end of detibble
+#' toXL(NULL)
+toXL <- function(x) {
+  cat("Currently deprecated as it was causing problems building codeutils \n")
+  cat("MacOS machines, which do not use a 'clipboard' and \n")
+  cat("write.table(x,file = pipe('pbcopy') was not behaving. Until I find \n")
+  cat("a work-around, the original function code can now be found in \n")
+  cat("'systemcall_source.R' in the data-raw subdirectory of the package \n")
+  cat("directory. \n\n")
+} # end of deprecated toXL
 
 #' @title which.closest find the number closest to a given value
 #'
@@ -1934,7 +1935,7 @@ pathfinish <- function(inpath) {
 #' 
 #' @description pathfromcopy it is very common to want to convert a path copied
 #'     from the file explorer in Windows into an R path. This function uses the
-#'     utils functions ,Platform$OS.type and readClipboard tomake this an
+#'     utils functions ,Platform$OS.type and readClipboard to make this an
 #'     automatic process. Its about time I did this!
 #'
 #' @returns a path converted to have forward slashes rather than paired 

@@ -13,7 +13,7 @@ or single backslashs.
 \description{
 pathfromcopy it is very common to want to convert a path copied
 from the file explorer in Windows into an R path. This function uses the
-utils functions ,Platform$OS.type and readClipboard tomake this an
+utils functions ,Platform$OS.type and readClipboard to make this an
 automatic process. Its about time I did this!
 }
 \examples{

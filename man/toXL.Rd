@@ -2,29 +2,21 @@
 % Please edit documentation in R/rutils.R
 \name{toXL}
 \alias{toXL}
-\title{toXL copies a data.frame or matrix to the clipboard}
+\title{toXL a notice deprecating the function}
 \usage{
-toXL(x, output = FALSE)
+toXL(x)
 }
 \arguments{
-\item{x}{a vector or matrix}
-
-\item{output}{\itemize{
-\item a boolean determining whether to print the object to the
-screen as well as the clipboard; defaults to FALSE
-}}
+\item{x}{a dummy variable}
 }
 \value{
-Places the object 'x' into the clipboard ready for pasting
+a message descripbing where toXL can now be found
 }
 \description{
-toXL copies a data.frame or matrix to the clipboard
-so one can then switch to Excel and just type ctrl + V to paste the
-data in place
+toXL was causing issues for MacOS machines, so I have put the
+original function into the source file 'systemcall_source.R' in the
+data-raw subdirectory of the package.
 }
 \examples{
-datamatrix <- matrix(data=rnorm(100),nrow=10,ncol=10)
-colnames(datamatrix) <- paste0("A",1:10)
-rownames(datamatrix) <- paste0("B",1:10)
-toXL(datamatrix,output=TRUE)
+toXL(NULL)
 }
