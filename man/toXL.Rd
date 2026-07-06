@@ -2,21 +2,27 @@
 % Please edit documentation in R/rutils.R
 \name{toXL}
 \alias{toXL}
-\title{toXL a notice deprecating the function}
+\title{toXL A generalized version that should work on Windows and MacOS}
 \usage{
-toXL(x)
+toXL(x, rnames = FALSE, big = FALSE)
 }
 \arguments{
-\item{x}{a dummy variable}
+\item{x}{an R matrix or data.frame}
+
+\item{rnames}{should rownames be included, default=FALSE}
+
+\item{big}{will a large amount of information be moved, default=FALSE}
 }
 \value{
-a message descripbing where toXL can now be found
+Nothing but the R object will be copied ready for pasting into
+another program, eg Excel.
 }
 \description{
 toXL was causing issues for MacOS machines, so I have put the
 original function into the source file 'systemcall_source.R' in the
-data-raw subdirectory of the package.
+data-raw subdirectory of the package. The code is a slightly modified
+version of a toXL by Simon Delestang in Western Australia.
 }
 \examples{
-toXL(NULL)
+toXL(matrix(rnorm(25,mean=5,sd=1),nrow=5,ncol=5))
 }

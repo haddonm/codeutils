@@ -2,12 +2,12 @@
 % Please edit documentation in R/rutils.R
 \name{iscol}
 \alias{iscol}
-\title{incol is a utility to determine if a column is present in a matrix}
+\title{incol determines if a column is present in a matrix or a data.frame.}
 \usage{
-iscol(incol = "year", inmat)
+iscol(incol, inmat)
 }
 \arguments{
-\item{incol}{the name of the column; defaults to "year" as an example}
+\item{incol}{the name of the column; for example "year"}
 
 \item{inmat}{the matrix or data.frame within which to search for incol}
 }
@@ -16,8 +16,8 @@ TRUE or FALSE
 }
 \description{
 incol is a utility to determine whether a named column is
-present in a given matrix or data.frame. Is case sensitive! Originally
-developed within MQMF
+present in a given matrix or data.frame. Is case sensitive and checks
+that the inpout is amtrix or data.frame.
 }
 \examples{
 x <- 1:10

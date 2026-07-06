@@ -29,4 +29,6 @@ text as numbers
   getConst(txtline,nb=1,index=2)
   txtline <- "Dead_Catch_MSY 588.1"
   getConst(txtline,nb=1,index=2,split=" ")
+  inline <- "anothername , 31,32,NA"
+  getConst(inline=inline,nb=3,index=2)
 }

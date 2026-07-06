@@ -334,6 +334,8 @@ geomean <- function(invect=NULL) {
 #'   getConst(txtline,nb=1,index=2)
 #'   txtline <- "Dead_Catch_MSY 588.1"
 #'   getConst(txtline,nb=1,index=2,split=" ")
+#'   inline <- "anothername , 31,32,NA"
+#'   getConst(inline=inline,nb=3,index=2)
 getConst <- function(inline,nb,index=2,split=",") { # parses lines containing numbers
   #  inline=indat[c(from+1)];nb=2;index=2
   ans <- numeric(nb)
@@ -346,7 +348,11 @@ getConst <- function(inline,nb,index=2,split=",") { # parses lines containing nu
     count <- 0
     for (j in index:(nb+index-1)) {
       count <- count + 1
-      ans[count] <- as.numeric(tmp[j])
+      if (tmp[j] == "NA") {
+        ans[count] <- NA
+      } else {
+        ans[count] <- as.numeric(tmp[j])
+      }
     }
   }
   return(ans)
@@ -665,13 +671,13 @@ insertmissingRC <- function(x,inccol=1,incrow=1) { # x=dat
   return(expandx)
 } # end of insertmissingRC
 
-#' @title incol is a utility to determine if a column is present in a matrix
+#' @title incol determines if a column is present in a matrix or a data.frame.
 #'
 #' @description incol is a utility to determine whether a named column is
-#'     present in a given matrix or data.frame. Is case sensitive! Originally
-#'     developed within MQMF
+#'     present in a given matrix or data.frame. Is case sensitive and checks
+#'     that the inpout is amtrix or data.frame. 
 #'
-#' @param incol the name of the column; defaults to "year" as an example
+#' @param incol the name of the column; for example "year"
 #' @param inmat the matrix or data.frame within which to search for incol
 #'
 #' @return TRUE or FALSE
@@ -685,10 +691,14 @@ insertmissingRC <- function(x,inccol=1,incrow=1) { # x=dat
 #' iscol("Catch",test)
 #' iscol("catch",test)
 #' iscol("ages",test)
-iscol <- function(incol="year",inmat) {
-  if (length(grep(incol,colnames(inmat))) < 1) return(FALSE)
-  else return(TRUE)
-}  # end of iscol
+iscol <- function(incol,inmat) { # incol="ages"; inmat=pnaa
+  if (class(inmat)[1] %in% c("matrix","data.frame")) { 
+    if (length(grep(incol,colnames(inmat))) < 1) return(FALSE)
+    else return(TRUE) 
+  } else {
+    stop(cat("input is neither a matrix nor a data.frame \n"))
+  }
+} # end of iscol
 
 #' @title limitstr temporarily constrains the width of the output from str
 #' 
@@ -1233,27 +1243,46 @@ tidynames <- function(columns,replace,repwith) {
   return(columns)
 } # end of tidynames
 
-#' @title toXL a notice deprecating the function
+#' @title toXL A generalized version that should work on Windows and MacOS
 #'
 #' @description toXL was causing issues for MacOS machines, so I have put the 
 #'      original function into the source file 'systemcall_source.R' in the 
-#'      data-raw subdirectory of the package.
+#'      data-raw subdirectory of the package. The code is a slightly modified
+#'      version of a toXL by Simon Delestang in Western Australia.
 #'
-#' @param x a dummy variable
+#' @param x an R matrix or data.frame
+#' @param rnames should rownames be included, default=FALSE
+#' @param big will a large amount of information be moved, default=FALSE
 #'
-#' @returns a message descripbing where toXL can now be found
+#' @returns Nothing but the R object will be copied ready for pasting into
+#'     another program, eg Excel.
 #' @export
 #'
 #' @examples
-#' toXL(NULL)
-toXL <- function(x) {
-  cat("Currently deprecated as it was causing problems building codeutils \n")
-  cat("MacOS machines, which do not use a 'clipboard' and \n")
-  cat("write.table(x,file = pipe('pbcopy') was not behaving. Until I find \n")
-  cat("a work-around, the original function code can now be found in \n")
-  cat("'systemcall_source.R' in the data-raw subdirectory of the package \n")
-  cat("directory. \n\n")
-} # end of deprecated toXL
+#' toXL(matrix(rnorm(25,mean=5,sd=1),nrow=5,ncol=5))
+toXL <- function(x, rnames = FALSE, big = FALSE) {
+  if (.Platform$OS.type == "windows") { 
+    cb <- ifelse(big,"clipboard-4194304","clipboard")
+    write.table(x, cb, sep = "\t", row.names = rnames) 
+  } else { 
+    if (Sys.info()["sysname"] == "Darwin") { 
+      con=pipe("pbcopy")
+      write.table(x, con, sep = "\t",row.names = rnames)
+     } else { 
+       con=pipe("xclip -selection clipboard")
+        write.table(x, con,sep = "\t", row.names = rnames)
+     #  close(con) 
+    }
+  }
+} # end of toXL
+# toXL <- function(x) {
+#   cat("Currently deprecated as it was causing problems building codeutils \n")
+#   cat("MacOS machines, which do not use a 'clipboard' and \n")
+#   cat("write.table(x,file = pipe('pbcopy') was not behaving. Until I find \n")
+#   cat("a work-around, the original function code can now be found in \n")
+#   cat("'systemcall_source.R' in the data-raw subdirectory of the package \n")
+#   cat("directory. \n\n")
+# } # end of deprecated toXL
 
 #' @title which.closest find the number closest to a given value
 #'
