@@ -205,22 +205,34 @@ facttonum <- function(invect){
 #'
 #' @description freqMean calculates the mean and stdev of count data
 #'     it requires both the values and their associated counts and
-#'     return a vector of two numbers.
+#'     return a vector of two numbers. The log-normal option provides estimates
+#'     which are not bias adjusted.
 #'
 #' @param values the values for which there are counts
 #' @param counts the counts for each of the values empty cells can be
 #'     either 0 or NA
+#' @param natlog default = FALSE, which implies the frequency distribution
+#'     being summarized is normally distributed. If it is log-normally skewed
+#'     then setting natlog=TRUE log-transforms the counts after removal of all
+#'     NAs. That adjusts te mean count to account for the log-normal
+#'     skewness
 #'
 #' @return a vector containing the mean and st.dev.
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' vals <- c(1,2,3,4,5)    values=dat[,1];counts=dat[,2]
-#' counts <- c(3,NA,7,4,2)
-#' freqMean(vals,counts)  # should give 3.125 and 1.258306
-#' }
-freqMean <- function(values,counts) {
+#' print("Normal distribution example")
+#' tmp <- round(rnorm(1000,mean=10,sd=1))
+#' vect <- as.matrix(table(tmp))
+#' values <- as.numeric(rownames(vect))
+#' freqMean(values=values,counts=vect)
+#' print("Log-Normal distribution example")
+#' tmp <- round(rlnorm(1000,meanlog=log(10),sdlog=0.2))
+#' print(mean(tmp))
+#' vect <- as.matrix(table(tmp))
+#' values <- as.numeric(rownames(vect))
+#' freqMean(values=values,counts=log(vect),natlog=TRUE)
+freqMean <- function(values,counts,natlog=FALSE) {
   N <- length(values)
   if (N != length(counts)) {
     cat("vectors have different lengths \n")
@@ -232,16 +244,12 @@ freqMean <- function(values,counts) {
       counts <- counts[-pick]
       values <- values[-pick]
     }
-    nobs <- sum(counts,na.rm=T)
-    sumX <- sum(values * counts,na.rm=T)
-    av <- sumX/nobs
-    if (length(counts[counts > 0.01]) > 1) {
-      sumX2 <- sum(values * 1.0 * values * counts,na.rm=T)
-      stdev <- sqrt((sumX2 - (sumX * 1.0 * sumX)/nobs)/(nobs-1))
-    } else { stdev <- NA
+    vect <- rep(values,times=counts)
+    if (natlog) {
+      ans <- geomean(vect,outsd=TRUE,biascorrect=FALSE)
+    } else {
+      ans <- c(mean(vect),sd(vect))
     }
-    ans <- c(av,stdev)
-    names(ans) <- c("mean","stdev")
   }
   return(ans)
 } # end of freqMean
@@ -290,16 +298,24 @@ getmatcolfromlist <- function(x,columname) { # x=prods; columname="MSY"
 #'     vector. NAs and zeros are removed from consideration. If a vector of
 #'     length zero is entered then geomean returns 0.
 #' @param invect is a vector of numbers in linear space.
-#' @return The bias-corrected geometric mean of the vector
+#' @param outsd default = FALSE. If tRUE the output is a vector of gmean and 
+#'     stdev instead of just the scalar gmean
+#' @param biascorrect default = TRUE, so geometric mean is bias corrected. If 
+#'     FALSE this is omitted
+#' 
+#' @return The bias-corrected geometric mean of the vector or a vector of gmean
+#'     and stdev
 #' @export geomean
 #' @examples
 #'  x <- c(1,2,3,4,5,6,7,8,9)
 #'  geomean(x)
+#'  geomean(x,outsd=TRUE)
 #'  geomean(c(NA,0,NA,0))
 #'  geomean()
-geomean <- function(invect=NULL) {
+geomean <- function(invect=NULL,outsd=FALSE,biascorrect=TRUE) {
   if ((length(invect) == 0) | (sum(invect,na.rm=TRUE) == 0.0)) {
     gmean <- 0
+    stdev <- 0
   } else {
     pick <- which((invect <= 0.0))
     if (length(pick) == 0) {
@@ -309,9 +325,17 @@ geomean <- function(invect=NULL) {
       avCE <- mean(log(invect[-pick]),na.rm=TRUE)
       stdev <- sd(log(invect[-pick]),na.rm=TRUE)
     }
-    gmean <- exp(avCE + (stdev^2)/2)
+    if (biascorrect) {
+      gmean <- exp(avCE + (stdev^2)/2)
+    } else {
+      gmean <- exp(avCE)
+    }
   }
+  if (outsd) {
+    return(c(gmean=gmean,stdev=stdev))
+  } else {
   return(gmean)
+  }
 }  # end of geomean
 
 #' @title getConst extracts 'nb' numbers from a line of text

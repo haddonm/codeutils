@@ -4,13 +4,20 @@
 \alias{geomean}
 \title{geomean log-normal bias corrected geometric mean of a vector}
 \usage{
-geomean(invect = NULL)
+geomean(invect = NULL, outsd = FALSE, biascorrect = TRUE)
 }
 \arguments{
 \item{invect}{is a vector of numbers in linear space.}
+
+\item{outsd}{default = FALSE. If tRUE the output is a vector of gmean and
+stdev instead of just the scalar gmean}
+
+\item{biascorrect}{default = TRUE, so geometric mean is bias corrected. If
+FALSE this is omitted}
 }
 \value{
-The bias-corrected geometric mean of the vector
+The bias-corrected geometric mean of the vector or a vector of gmean
+and stdev
 }
 \description{
 Calculates log-normal bias corrected geometric mean of a
@@ -20,6 +27,7 @@ length zero is entered then geomean returns 0.
 \examples{
  x <- c(1,2,3,4,5,6,7,8,9)
  geomean(x)
+ geomean(x,outsd=TRUE)
  geomean(c(NA,0,NA,0))
  geomean()
 }

@@ -4,13 +4,19 @@
 \alias{freqMean}
 \title{freqMean calculates the mean and stdev of count data}
 \usage{
-freqMean(values, counts)
+freqMean(values, counts, natlog = FALSE)
 }
 \arguments{
 \item{values}{the values for which there are counts}
 
 \item{counts}{the counts for each of the values empty cells can be
 either 0 or NA}
+
+\item{natlog}{default = FALSE, which implies the frequency distribution
+being summarized is normally distributed. If it is log-normally skewed
+then setting natlog=TRUE log-transforms the counts after removal of all
+NAs. That adjusts te mean count to account for the log-normal
+skewness}
 }
 \value{
 a vector containing the mean and st.dev.
@@ -18,12 +24,19 @@ a vector containing the mean and st.dev.
 \description{
 freqMean calculates the mean and stdev of count data
 it requires both the values and their associated counts and
-return a vector of two numbers.
+return a vector of two numbers. The log-normal option provides estimates
+which are not bias adjusted.
 }
 \examples{
-\dontrun{
-vals <- c(1,2,3,4,5)    values=dat[,1];counts=dat[,2]
-counts <- c(3,NA,7,4,2)
-freqMean(vals,counts)  # should give 3.125 and 1.258306
-}
+print("Normal distribution example")
+tmp <- round(rnorm(1000,mean=10,sd=1))
+vect <- as.matrix(table(tmp))
+values <- as.numeric(rownames(vect))
+freqMean(values=values,counts=vect)
+print("Log-Normal distribution example")
+tmp <- round(rlnorm(1000,meanlog=log(10),sdlog=0.2))
+print(mean(tmp))
+vect <- as.matrix(table(tmp))
+values <- as.numeric(rownames(vect))
+freqMean(values=values,counts=log(vect),natlog=TRUE)
 }
