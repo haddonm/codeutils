@@ -4,7 +4,14 @@
 \alias{outfit}
 \title{outfit tidy print of output from optim, nlminb, or nlm}
 \usage{
-outfit(inopt, backtran = TRUE, digits = 5, title = "", parnames = "")
+outfit(
+  inopt,
+  backtran = TRUE,
+  digits = 5,
+  title = "",
+  parnames = "",
+  hessianout = TRUE
+)
 }
 \arguments{
 \item{inopt}{the list object output by nlm, nlminb, or optim}
@@ -22,6 +29,9 @@ default = empty character string}
 \item{parnames}{default="" which means the estimated parameters
 will merely be numbered. If a vector of names is given
 then this will be used instead, at least, for nlm and optim.}
+
+\item{hessianout}{default = TRUE. If many parameters it may be better
+to set this as FALSE to prevent printing a large matrix to console}
 }
 \value{
 nothing but it does print the list to the console tidily

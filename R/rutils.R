@@ -879,6 +879,8 @@ magnitude <- function(x) {
 #' @param parnames default="" which means the estimated parameters
 #'     will merely be numbered. If a vector of names is given 
 #'     then this will be used instead, at least, for nlm and optim.
+#' @param hessianout default = TRUE. If many parameters it may be better
+#'     to set this as FALSE to prevent printing a large matrix to console
 #'
 #' @return nothing but it does print the list to the console tidily
 #' @export
@@ -895,7 +897,7 @@ magnitude <- function(x) {
 #'  best <- nlm(f=ssq,p=pars,typsize=magnitude(pars),indat=alldat)
 #'  outfit(best,backtran=FALSE) #a=1.3134, b=2.2029 ssq=571.5804
 outfit <- function(inopt,backtran=TRUE,digits=5,title="",
-                   parnames=""){
+                   parnames="",hessianout=TRUE){
   #  inopt=bestvB; backtran = FALSE; digits=5; title=""; parnames=""
   nlmcode <- c("gradient close to 0, probably solution",
                ">1 iterates in tolerance, probably solution",
@@ -947,7 +949,7 @@ outfit <- function(inopt,backtran=TRUE,digits=5,title="",
     cat("code       : ",inopt$evaluations," iterations, gradient\n")
     cat("message    : ",inopt$message,"\n")
   }
-  if (length(grep("hessian",names(inopt))) > 0) {
+  if ((length(grep("hessian",names(inopt))) > 0) & (hessianout)) {
     cat("hessian     : \n")
     print(inopt$hessian)
   }
