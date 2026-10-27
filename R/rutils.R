@@ -860,6 +860,33 @@ magnitude <- function(x) {
   return(10^(floor(log10(abs(x)))))
 }
 
+#' @title naturalM tracks the implications of a given natural mortality rate
+#' 
+#' @description naturalM realizes the implications for applying a natural 
+#'     mortality rate to a population with a starting size of 'init' across
+#'     a given set of 'ages'. The approximate rule, if init = 100, is that 
+#'     one might expect the animals concerned to live up to the age where the
+#'     predicted abundance remains at about 1.0 or one percent.
+#'
+#' @param M the instantaneous natural mortality rate being explored.
+#' @param maxage ages start at 0 and extend to this maximum age, default = 40
+#' @param init the initial population size, default = 100
+#'
+#' @returns a vector of equilibrium age structure under a constant M
+#' @export
+#'
+#' @examples
+#' naturalM(M=0.5,maxage=15) # should settle on 1.0 between ages 10 and 11
+naturalM <- function(M,maxage=40,init=100) {
+  ages <- 0:maxage
+  iter <- length(ages)
+  surv <- exp(-M)
+  Nt <- numeric(iter)
+  names(Nt) <- ages
+  Nt[1] <- init
+  for (i in 2:iter) Nt[i] <- Nt[i-1] * surv
+  return(round(Nt,2))
+} # end of naturalM
 
 #' @title outfit tidy print of output from optim, nlminb, or nlm
 #'
@@ -1203,16 +1230,20 @@ rowfreqboot <- function(x,n,randsd=0) {  # x =x; n = 200
 #'
 #' @param x the object whose structure is to be listed
 #' @param attrs should the objects attributes be printed? default = FALSE
+#' @param veclen length of first few elements from vectors, can be multiplied
+#'     by 0.5 to 3 depending on vector type, hence default = 2.5, which suits 
+#'     printing to a paper page.
 #' @param ... ellipsis allows str arguments to be included, eg vec.len=4
 #'
-#' @return str(x,max.level=1,attrs=attrs,...)
+#' @return str(x,max.level=1,attrs=attrs,vec.len=veclen...)
 #' @export
 #'
 #' @examples
 #' x <- matrix(rnorm(25,mean=5,sd=1),nrow=5,ncol=5)
 #' str1(x)
-str1 <- function(x,attrs = FALSE,...){
-  return(str(x,max.level=1,give.attr=attrs,...))
+#' str1(x,veclen=4)
+str1 <- function(x,attrs = FALSE,veclen=2.5,...){
+  return(str(x,max.level=1,give.attr=attrs,vec.len=veclen,...))
 }
 
 #' @title str2 a simple replacement for str(x,max.level=2,give.attr=FALSE)

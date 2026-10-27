@@ -4,17 +4,21 @@
 \alias{str1}
 \title{str1 a simple replacement for str(x,max.level=1,give.attr=FALSE)}
 \usage{
-str1(x, attrs = FALSE, ...)
+str1(x, attrs = FALSE, veclen = 2.5, ...)
 }
 \arguments{
 \item{x}{the object whose structure is to be listed}
 
 \item{attrs}{should the objects attributes be printed? default = FALSE}
 
+\item{veclen}{length of first few elements from vectors, can be multiplied
+by 0.5 to 3 depending on vector type, hence default = 2.5, which suits
+printing to a paper page.}
+
 \item{...}{ellipsis allows str arguments to be included, eg vec.len=4}
 }
 \value{
-str(x,max.level=1,attrs=attrs,...)
+str(x,max.level=1,attrs=attrs,vec.len=veclen...)
 }
 \description{
 str1 an abbreviated replacement for str(x,max.level=1), which I
@@ -24,4 +28,5 @@ str syntax. Hence I find str1 helpful
 \examples{
 x <- matrix(rnorm(25,mean=5,sd=1),nrow=5,ncol=5)
 str1(x)
+str1(x,veclen=4)
 }
