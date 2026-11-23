@@ -47,6 +47,7 @@ export(makeUnit)
 export(makelabel)
 export(makelist)
 export(naturalM)
+export(negNLL)
 export(outfit)
 export(pathfinish)
 export(pathfromcopy)
@@ -92,6 +93,7 @@ importFrom(graphics,
 )
 importFrom(knitr,kable)
 importFrom(stats,
+  dnorm,
   loess,
   quantile,
   rnorm,

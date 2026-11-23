@@ -1,3 +1,11 @@
+#' @importFrom grDevices dev.cur dev.new dev.off png palette
+#' @importFrom graphics par grid plot axis mtext polygon title hist lines text
+#' @importFrom graphics points
+#' @importFrom utils tail head str write.table write.csv
+#' @importFrom utils strOptions readClipboard
+#' @importFrom stats quantile loess sd rnorm dnorm
+#' @importFrom knitr kable
+NULL
 
 #' codeutils: a set of functions to assist with code development
 #'
@@ -41,11 +49,3 @@
 "_PACKAGE"
 NULL
 
-#' @importFrom grDevices dev.cur dev.new dev.off png palette
-#' @importFrom graphics par grid plot axis mtext polygon title hist lines text
-#' @importFrom graphics points
-#' @importFrom utils tail head str write.table write.csv
-#' @importFrom utils strOptions readClipboard
-#' @importFrom stats quantile loess sd rnorm
-#' @importFrom knitr kable
-NULL

@@ -888,6 +888,64 @@ naturalM <- function(M,maxage=40,init=100) {
   return(round(Nt,2))
 } # end of naturalM
 
+#' @title negNLL  -ve log-likelihood for normally distributed variables
+#'
+#' @description negNLL - Calculates the negative log-likelihood for
+#'     normally distributed variables. It requires a function, 'funk' 
+#'     as an argument, that will calculate predicted values of a 
+#'     variable from a vector of input values. In the example below the
+#'     predicted values are weight-at-length and the input data are the sizes
+#'     used and the observed weights for the sizes used.
+#'     Only the arguments used within negNLL are listed explicitly, 
+#'     which leaves the data required to drive the funk to generate the
+#'     predicted values for comparison with the observed to be passed 
+#'     using the ..., so take care with spelling of the variable name
+#'     required by whatever funk is being used. In teh example we are using 
+#'     WaA against the estimated LaA to define the WaL curve parameters.
+#'     One must include a StDev value at the end of the parameter list so the
+#'     dnorm function behaves appropriately.
+#'     
+#' @param pars a vector containing the parameters being used in funk, 
+#'     plus the sigma, which is the standard deviation of the normal 
+#'     random likelihoods in dnorm, an extra estimated parameter.
+#'     Because negNLL refers explicitly to sigma, which must be the 
+#'     last parameter in the vector, it must be listed in the parameters
+#' @param funk the function name that calculates the predicted values 
+#'     from the independent values passed using the ellipsis.
+#' @param observed the observed values of the variable that the model 
+#'     will predict to compare with each of the input observed values.
+#' @param ... required to allow funk to access its other input data driving
+#'     funk without having to explicitly define them in negNLL
+#'     
+#' @return the sum of the negative log-likelihoods using a normal PDF
+#' @export
+#'
+#' @examples
+#' # convert weiht-at-age to Weight at length
+#'  ages <- 0:30
+#'  gpar <- c(Linf=55.9,K=0.198,t0=-0.51)
+#'  Wtpar <- c(Wta=0.00000588,Wtb=3.31)  # true values
+#'  LaA <- gpar[1] * (1 - exp(-gpar[2]*(ages-gpar[3])))
+#'  WaA <- Wtpar[1] * LaA ^ Wtpar[2]
+#'  getWaL <- function(pars,sizes) { 
+#'     WaL <- pars[1] * sizes ^ pars[2]
+#'     return(WaL) 
+#'  } # end of getWaL
+#'  wpar <- c(wta=5.5e-06,wtb=3.1,sd=0.5)
+#'  bestWL <- nlm(f=negNLL,p=wpar,funk=getWaL,observed=WaA,
+#'                sizes=LaA,typsize=magnitude(wpar))
+#'  predW <- bestWL$estimate[1] * LaA ^ bestWL$estimate[2]              
+#'  cbind(LaA,WaA,predW,WaA-predW)
+#'   # warnings reflect the small value of wta
+#'  # the difference is small but not zero = numerical methods
+negNLL <- function (pars, funk, observed, ...) {
+  npar <- length(pars)
+  predobs <- funk(pars, ...)
+  LL <- -sum(dnorm(x = observed, mean = predobs, sd = pars[npar], 
+                   log = TRUE))
+  return(LL)
+} # end of negNLL
+
 #' @title outfit tidy print of output from optim, nlminb, or nlm
 #'
 #' @description outfit takes in the output list from either optim,
